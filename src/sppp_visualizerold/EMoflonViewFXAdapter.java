@@ -25,7 +25,6 @@ import javafx.scene.web.WebView;
 
 public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 
-	private final Stage stage = new Stage();
 	
 	public EMoflonViewFXAdapter() {
 		// TODO Auto-generated constructor stub
@@ -41,6 +40,7 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 	@Override
 	public boolean renderView(EMoflonView emoflonView, IWorkbenchPart part, ISelection selection) {
 		System.out.println("success");
+		Stage stage = new Stage();
 		BorderPane root = new BorderPane();
 		Scene scene = new Scene(root, 600, 400);
 		stage.setScene(scene);
