@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+
+<TabPane fx:id="tabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1400.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="api.Controller">
+  <tabs>
+    <Tab fx:id="tabNetworkView" text="network view">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#217aff6e" height="152.0" layoutX="1019.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="356.0" />
+                  <WebView fx:id="webView" layoutX="15.0" layoutY="16.0" prefHeight="844.0" prefWidth="995.0" />
+                  <Label layoutX="1036.0" layoutY="16.0" prefHeight="21.0" prefWidth="285.0" text="Legend for Node/Edge-manipulation: ">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="1036.0" layoutY="38.0" prefHeight="21.0" prefWidth="537.0" text="• Toggle one of the following buttons to add a specific " />
+                  <Label layoutX="1034.0" layoutY="58.0" prefHeight="22.0" prefWidth="154.0" text="       node to the network." />
+                  <ToggleButton fx:id="toggleButtoneclass" layoutX="1030.0" layoutY="87.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="125.0" text="Add EClass node" />
+                  <ToggleButton fx:id="toggleButtonabstract" layoutX="1161.0" layoutY="87.0" mnemonicParsing="false" text="Add abstract EClass node" />
+                  <ToggleButton fx:id="toggleButtoneenum" layoutX="1030.0" layoutY="122.0" mnemonicParsing="false" text="Add EEnum node" />
+                  <ToggleButton fx:id="toggleButtoneinterface" layoutX="1161.0" layoutY="122.0" mnemonicParsing="false" text="Add EInterface node" />
+                  <WebView fx:id="webView2" layoutX="1029.0" layoutY="183.0" prefHeight="483.0" prefWidth="354.0" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab fx:id="tabOptions" text="options">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Label layoutX="396.0" layoutY="31.0" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>
