@@ -1,7 +1,7 @@
 package controller;
 	
 import javafx.application.Application;
-import view.FXMLWindow;
+import view.OtherFXMLWindow;
 
 public class FXMLWindowLauncher {
 	
@@ -13,7 +13,7 @@ public class FXMLWindowLauncher {
 	 * @param args The command line arguments.
 	 */
 	public static void main(String[] args) {
-		Application.launch(FXMLWindow.class);
+		Application.launch(OtherFXMLWindow.class);
 	}
 }
 

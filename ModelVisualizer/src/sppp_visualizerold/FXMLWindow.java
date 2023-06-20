@@ -27,19 +27,19 @@ public class FXMLWindow extends Application {
 		if(composite == null)
 			throw new RuntimeException("FXMLWindow needs a preregistered composite");
 		
-//		System.out.println("Starting FXMLWindow");
-//		var canvas = new FXCanvas(composite, SWT.NONE);
+		System.out.println("Starting FXMLWindow");
+		var canvas = new FXCanvas(composite, SWT.NONE);
 
-//        canvas.setScene(createScene());
+        canvas.setScene(createScene());
     }
 	
 	public static void registerParentComposite(Composite composite) {
 		System.out.println("Register Composite");
 		FXMLWindow.composite = composite;
-		
-		var canvas = new FXCanvas(composite, SWT.NONE);
-
-        canvas.setScene(createScene());
+//		
+//		var canvas = new FXCanvas(composite, SWT.NONE);
+//
+//        canvas.setScene(createScene());
 	}
 	
 	private static Scene createScene() {

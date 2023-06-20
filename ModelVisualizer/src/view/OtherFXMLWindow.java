@@ -10,13 +10,13 @@ import javafx.stage.Stage;
 import javafx.scene.layout.BorderPane;
 import netscape.javascript.JSObject;
 
-public class FXMLWindow extends Application {
+public class OtherFXMLWindow extends Application {
 
 	public static FXCanvas canvas;
 	
 	protected JSObject window;
 
-	public FXMLWindow() {
+	public OtherFXMLWindow() {
 	}
 
 	/**
