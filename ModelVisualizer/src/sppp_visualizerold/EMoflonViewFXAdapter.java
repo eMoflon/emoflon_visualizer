@@ -44,7 +44,7 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
         // set scene
 		Group group = new Group();
         Scene view_scene = new Scene(group);
-        Button button = new Button("JFX Button");
+        Button button = new Button("JFX ButtoSn");
         group.getChildren().add(button);
         fxCanvas.setScene(view_scene);
 	}
