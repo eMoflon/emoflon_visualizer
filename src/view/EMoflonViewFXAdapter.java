@@ -11,6 +11,7 @@ import org.moflon.core.ui.EMoflonView;
 import org.moflon.core.ui.visualisation.common.EMoflonViewVisualizer;
 
 import api.VisJsAdapter;
+import controller.VisFXController;
 import javafx.embed.swt.FXCanvas;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -58,7 +59,6 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 		engine.executeScript(VisJsScriptTemplates.addHeridityEdges(model.returnHeridityEdges()));
 		engine.executeScript(VisJsScriptTemplates.addInterfaceNodes(model.returnInterfaceNodes()));
 		engine.executeScript("var network = new vis.Network(container,data, options);");
-
 		return true;
 	}
 	
@@ -73,18 +73,12 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
         // set scene
 		Group group = new Group(); 
 		Parent root;
-//		try {
-			FXMLLoader.setDefaultClassLoader(VisFXController.class.getClassLoader());
-//			root = FXMLLoader.load(getClass().getResource("VisFXMLView.fxml"));
 	        Scene view_scene = new Scene(group);
-//	        Button button = new Button("JFX ButtoSn");
-//	        group.getChildren().add(button);
+	        Button button = new Button("JFX ButtoSn");
+	        group.getChildren().add(button);
 	        group.getChildren().add(webView);
 	        fxCanvas.setScene(view_scene);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
 	}
 
 }
