@@ -1,10 +1,13 @@
 package model;
 
 import java.util.Collection;
+import java.util.Map.Entry;
 
 import org.eclipse.emf.ecore.EObject;
 
 import com.google.common.collect.HashBiMap;
+
+import javafx.scene.web.WebEngine;
 
 public class TGGModelHandler extends ModelHandler {
 
@@ -19,8 +22,15 @@ public class TGGModelHandler extends ModelHandler {
 	}
 
 	@Override
-	public HashBiMap<String, String> returnNodes() {
+	public void refreshWindow() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
+
+	@Override
+	public void createNetwork(WebEngine engine) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

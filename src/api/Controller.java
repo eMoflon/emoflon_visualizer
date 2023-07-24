@@ -289,6 +289,12 @@ public class Controller implements Initializable {
 		biDirNamesMerge(biDirMergeNames);
 	}
 	
+	private void testingNewUniversalEdges() {
+		elist.forEach(current ->{
+			
+		});
+	}
+	
 	private String changeNodes() {
 		ArrayList<String> list = new ArrayList<>();
 		nodes.values().forEach(current -> {list.add(current);});

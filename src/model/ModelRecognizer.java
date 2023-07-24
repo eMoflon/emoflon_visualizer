@@ -14,13 +14,14 @@ public class ModelRecognizer {
 	 */
 	public static boolean identifySelection(ISelection selection) {
 		// check whether the selection contains an ecore selection
+		
 		if (VisualiserUtilities.isEcoreSelection(selection)) {
 			Collection<EObject> elist = VisualiserUtilities.extractEcoreSelection(selection);
 			// check whether the extracted collection has metamodel elements
 			if (VisualiserUtilities.hasMetamodelElements(elist)) {
 				return true;
 			} else {
-				// check whether the extracted collection has metamodel elements
+				// check whether the extracted collection has model elements
 				if (VisualiserUtilities.hasModelElements(elist)) {
 					return true;
 				} else {
@@ -41,7 +42,7 @@ public class ModelRecognizer {
 			model = new MetaModelHandler(elist);
 		}
 		if (VisualiserUtilities.hasModelElements(elist)) {
-			model = new BasicModelHandler(elist);
+			model = new XMIModelHandler(elist);
 		}
 		return model;
 	}

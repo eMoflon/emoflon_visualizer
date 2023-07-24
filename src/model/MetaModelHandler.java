@@ -17,6 +17,8 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 
 import com.google.common.collect.HashBiMap;
 
+import javafx.scene.web.WebEngine;
+
 public class MetaModelHandler extends ModelHandler {
 
 	private Collection<EObject> elist;
@@ -53,36 +55,16 @@ public class MetaModelHandler extends ModelHandler {
 		int n = 0;
 	}
 
-	public HashBiMap<String, String> returnNodes() {
-		return nodes;
-	}
-
-	public HashBiMap<String, String> returnEnumNodes() {
-		return enumNodes;
-	}
-
-	public HashBiMap<String, String> returnAbstractNodes() {
-		return abstractNodes;
-	}
-
-	public HashBiMap<String, String> returnInterfaceNodes() {
-		return interfaceNodes;
-	}
-
-	public HashBiMap<String, Entry<String, String>> returnEdges() {
-		return edges;
-	}
-
-	public HashBiMap<String, Entry<String, String>> returnBiDirEdges() {
-		return biDirEdges;
-	}
-
-	public HashBiMap<String, Entry<String, String>> returnHeridityEdges() {
-		return heridityEdges;
-	}
-
-	public HashBiMap<String, Entry<String, String>> returnImplementsEdges() {
-		return implementsEdges;
+	public void createNetwork(WebEngine engine) {
+		engine.executeScript(VisJsScriptTemplates.addNodes(nodes));
+		engine.executeScript(VisJsScriptTemplates.addAbstractNodes(abstractNodes));
+		engine.executeScript(VisJsScriptTemplates.addInterfaceNodes(interfaceNodes));
+		engine.executeScript(VisJsScriptTemplates.addEnumNodes(enumNodes));
+		engine.executeScript(VisJsScriptTemplates.addEdges(edges));
+		engine.executeScript(VisJsScriptTemplates.addBidirectionalEdges(biDirEdges));
+		engine.executeScript(VisJsScriptTemplates.addHeridityEdges(heridityEdges));
+		engine.executeScript(VisJsScriptTemplates.addInterfaceNodes(interfaceNodes));
+		engine.executeScript("var network = new vis.Network(container,data, options);");
 	}
 
 	/**
@@ -236,7 +218,7 @@ public class MetaModelHandler extends ModelHandler {
 
 			);
 		}
-		biDirNamesMerge(biDirMergeNames);
+//		biDirNamesMerge(biDirMergeNames);
 	}
 
 	/**
@@ -251,7 +233,7 @@ public class MetaModelHandler extends ModelHandler {
 			i++;
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param str1
@@ -266,6 +248,7 @@ public class MetaModelHandler extends ModelHandler {
 			return true;
 	}
 
+
 	public ArrayList<EObject> collectionToArrayList() {
 		ArrayList<EObject> eArrayList = new ArrayList<>();
 		elist.forEach(current -> {
@@ -273,5 +256,11 @@ public class MetaModelHandler extends ModelHandler {
 		});
 
 		return eArrayList;
+	}
+
+	@Override
+	public void refreshWindow() {
+		// TODO Auto-generated method stub
+		
 	}
 }

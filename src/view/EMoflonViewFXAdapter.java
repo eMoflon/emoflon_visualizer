@@ -47,18 +47,10 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 	@Override
 	public boolean renderView(EMoflonView emoflonView, IWorkbenchPart part, ISelection selection) {
 		System.out.println("renderView");
-		engine.executeScript(VisJsScriptTemplates.destroyNetwork());
 		model = ModelRecognizer.identifyModel(selection);
+		engine.executeScript(VisJsScriptTemplates.destroyNetwork());
 		model.buildVis();
-		engine.executeScript(VisJsScriptTemplates.addNodes(model.returnNodes()));
-		engine.executeScript(VisJsScriptTemplates.addAbstractNodes(model.returnAbstractNodes()));
-		engine.executeScript(VisJsScriptTemplates.addInterfaceNodes(model.returnInterfaceNodes()));
-		engine.executeScript(VisJsScriptTemplates.addEnumNodes(model.returnEnumNodes()));
-		engine.executeScript(VisJsScriptTemplates.addEdges(model.returnEdges()));
-//		engine.executeScript(VisJsScriptTemplates.addBidirectionalEdges(model.returnBiDirEdges()));
-		engine.executeScript(VisJsScriptTemplates.addHeridityEdges(model.returnHeridityEdges()));
-		engine.executeScript(VisJsScriptTemplates.addInterfaceNodes(model.returnInterfaceNodes()));
-		engine.executeScript("var network = new vis.Network(container,data, options);");
+		model.createNetwork(engine);
 		return true;
 	}
 	
@@ -66,18 +58,22 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 	public void createPartControl(Composite parent) {
 		System.out.println("createPartControl");
 		fxCanvas = new FXCanvas(parent, SWT.NONE);
+		FXCanvas fxCanvasControls = new FXCanvas(parent, SWT.NONE);
 		webView = new WebView();
 		engine = webView.getEngine();
 		engine.setJavaScriptEnabled(true);
 		engine.loadContent(VisJsScriptTemplates.getJSTemplate());
-        // set scene
+        // set scenetype filter text
 		Group group = new Group(); 
+		Group group2 = new Group();
 		Parent root;
 	        Scene view_scene = new Scene(group);
+	        Scene scene2 = new Scene(group2);
 	        Button button = new Button("JFX ButtoSn");
-	        group.getChildren().add(button);
+	        group2.getChildren().add(button);
 	        group.getChildren().add(webView);
 	        fxCanvas.setScene(view_scene);
+//	        fxCanvasControls.setScene(scene2);
 
 	}
 
