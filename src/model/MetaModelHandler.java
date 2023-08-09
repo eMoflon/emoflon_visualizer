@@ -4,12 +4,12 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
+import java.util.HashMap;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EEnumLiteral;
-import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -21,27 +21,16 @@ import javafx.scene.web.WebEngine;
 
 public class MetaModelHandler extends ModelHandler {
 
+	private int nodeId;
+	private int edgeId;
 	private Collection<EObject> elist;
-
-	private int nodeIdCounter;
-	private int edgeIdCounter;
-	private int heridityEdgesCounter;
-	private int implementEdgesCounter;
-
-	protected HashBiMap<String, String> nodesWithIds = HashBiMap.create();
-	protected HashBiMap<String, String> nodes = HashBiMap.create();
-	protected HashBiMap<String, String> enumNodes = HashBiMap.create();
-	protected HashBiMap<String, String> abstractNodes = HashBiMap.create();
-	protected HashBiMap<String, String> interfaceNodes = HashBiMap.create();
-	protected HashBiMap<String, ArrayList<String>> nodesAttr = HashBiMap.create();
-
-	protected HashBiMap<String, Entry<String, String>> edges = HashBiMap.create();
-	protected HashBiMap<String, Entry<String, String>> biDirEdges = HashBiMap.create();
-	protected HashBiMap<String, Entry<String, String>> heridityEdges = HashBiMap.create();
-	protected HashBiMap<String, Entry<String, String>> implementsEdges = HashBiMap.create();
+	private HashBiMap<EObject, Entry<Integer, String>> allNodes = HashBiMap.create();
+	private HashMap<Entry<String, String>, Entry<String, String>> allEdges = new HashMap<Entry<String, String>, Entry<String, String>>();
 
 	public MetaModelHandler(Collection<EObject> elist) {
 		this.elist = elist;
+		this.nodeId = 0;
+		this.edgeId = 0;
 	}
 
 	/**
@@ -49,21 +38,52 @@ public class MetaModelHandler extends ModelHandler {
 	 */
 	public void buildVis() {
 		extractNodes();
-		if (elist.size() > 1) {
-			extractEdges();
-		}
-		int n = 0;
+		extractEdges();
+
 	}
 
+	/**
+	 * 
+	 */
 	public void createNetwork(WebEngine engine) {
-		engine.executeScript(VisJsScriptTemplates.addNodes(nodes));
-		engine.executeScript(VisJsScriptTemplates.addAbstractNodes(abstractNodes));
-		engine.executeScript(VisJsScriptTemplates.addInterfaceNodes(interfaceNodes));
-		engine.executeScript(VisJsScriptTemplates.addEnumNodes(enumNodes));
-		engine.executeScript(VisJsScriptTemplates.addEdges(edges));
-		engine.executeScript(VisJsScriptTemplates.addBidirectionalEdges(biDirEdges));
-		engine.executeScript(VisJsScriptTemplates.addHeridityEdges(heridityEdges));
-		engine.executeScript(VisJsScriptTemplates.addInterfaceNodes(interfaceNodes));
+		allNodes.forEach((key, value) -> {
+			switch (key.eClass().getName()) {
+			case "EClass":
+				if (((EClass) key).isAbstract()) {
+					if (((EClass) key).isInterface()) {
+						engine.executeScript(VisJsScriptTemplates.addInterfaceNode(value.getKey(),
+								((EClass) key).getName(), value.getValue()));
+					} else {
+						engine.executeScript(VisJsScriptTemplates.addAbstractNode(value.getKey(),
+								((EClass) key).getName(), value.getValue()));
+					}
+				} else {
+					engine.executeScript(
+							VisJsScriptTemplates.addNode(value.getKey(), ((EClass) key).getName(), value.getValue()));
+				}
+				break;
+			case "EEnum":
+				engine.executeScript(
+						VisJsScriptTemplates.addEnumNode(value.getKey(), ((EEnum) key).getName(), value.getValue()));
+			}
+		});
+		allEdges.forEach((key, value) -> {
+			switch (key.getKey()) {
+			case "implements":
+				engine.executeScript(VisJsScriptTemplates.addImplementsEdge(value.getKey(), value.getValue()));
+				break;
+			case "heridity":
+				engine.executeScript(VisJsScriptTemplates.addHeridityEdge(value.getKey(), value.getValue()));
+				break;
+			case "biDir":
+				engine.executeScript(
+						VisJsScriptTemplates.addBiDirEdge(value.getKey(), value.getValue(), key.getValue()));
+				break;
+			case "edge":
+				engine.executeScript(VisJsScriptTemplates.addEdge(value.getKey(), value.getValue(), key.getValue()));
+				break;
+			}
+		});
 		engine.executeScript("var network = new vis.Network(container,data, options);");
 	}
 
@@ -71,35 +91,12 @@ public class MetaModelHandler extends ModelHandler {
 	 * 
 	 */
 	public void extractNodes() {
-		// Will be used to form one String containing all EAttributes of the current
-		// EObject
-
 		elist.forEach(current -> {
 			switch (current.eClass().getName()) {
 			case "EClass":
-				// do smt.
-				if (((EClass) current).isAbstract()) {
-					if (((EClass) current).isInterface()) {
-						// EObject is an Interface
-						interfaceNodes.put(nodeIdCounter + "", "<i>Interface</i>" + "\\n<code>"
-								+ (((EClass) current).getName()) + "</code>\\n" + extractEAttributes(current));
-						nodesWithIds.put(nodeIdCounter + "", ((EClass) current).getName());
-						nodeIdCounter++;
-					} else {
-						// EClass is abstract
-						abstractNodes.put(nodeIdCounter + "", "<i>Abstract</i>" + "\\n<code>"
-								+ ((EClass) current).getName() + "</code>\\n" + "--" + extractEAttributes(current));
-						nodesWithIds.put(nodeIdCounter + "", ((EClass) current).getName());
-						nodeIdCounter++;
-					}
+				allNodes.put(current,
+						new AbstractMap.SimpleEntry<Integer, String>(nodeId++, extractEAttributes(current)));
 
-				} else {
-					// EClass is just an EClass
-					nodes.put(nodeIdCounter + "", "<code>" + ((EClass) current).getName() + "</code>\\n" + "--"
-							+ extractEAttributes(current));
-					nodesWithIds.put(nodeIdCounter + "", ((EClass) current).getName());
-					nodeIdCounter++;
-				}
 				break;
 
 			case "EEnum":
@@ -107,14 +104,68 @@ public class MetaModelHandler extends ModelHandler {
 				EList<EEnumLiteral> literalList = ((EEnum) current).getELiterals();
 				for (EEnumLiteral item : literalList)
 					literalStr += "\\n" + item.getName();
-				enumNodes.put(((EEnum) current).getName() + "",
-						"<i>" + "EEnum" + "\\n<code>" + ((EEnum) current).getName() + "</code>" + "\\n" + literalStr);
-				nodesWithIds.put(nodeIdCounter + "", ((EEnum) current).getName());
-				nodeIdCounter++;
+				allNodes.put(current, new AbstractMap.SimpleEntry<Integer, String>(nodeId++, literalStr));
+
 				break;
 			}
 
 		});
+	}
+
+	/**
+	 * 
+	 */
+	public void extractEdges() {
+		elist.forEach(current -> {
+			switch (current.eClass().getName()) {
+			case "EClass":
+				allNodes.forEach((k, v) -> {
+					if (!current.equals(k) && k.eClass().getName() != "EEnum") {
+						if (((EClass) current).isSuperTypeOf((EClass) k)) {
+							if (((EClass) current).isInterface()) {
+								allEdges.put(new AbstractMap.SimpleEntry<String, String>("implements", edgeId++ + ""),
+										new AbstractMap.SimpleEntry<String, String>(allNodes.get(current).getKey() + "",
+												allNodes.get(k).getKey() + ""));
+							} else {
+								allEdges.put(new AbstractMap.SimpleEntry<String, String>("heridity", edgeId++ + ""),
+										new AbstractMap.SimpleEntry<String, String>(allNodes.get(current).getKey() + "",
+												allNodes.get(k).getKey() + ""));
+							}
+						}
+					}
+				});
+				((EClass) current).getEAllReferences().forEach(ref -> {
+					if (ref.getEOpposite() != null) {
+						if (allNodes.containsKey(ref.getEReferenceType())
+								&& allNodes.containsKey(ref.getEOpposite().getEReferenceType())) {
+							if (!allEdges.containsValue(new AbstractMap.SimpleEntry<String, String>(
+									allNodes.get(ref.getEOpposite().getEReferenceType()).getKey() + "",
+									allNodes.get(ref.getEReferenceType()).getKey() + ""))) {
+								allEdges.put(
+										new AbstractMap.SimpleEntry<String, String>("biDir",
+												ref.getName() + "   " + ref.getLowerBound() + "..."
+														+ ref.getUpperBound()),
+										new AbstractMap.SimpleEntry<String, String>(
+												allNodes.get(ref.getEReferenceType()).getKey() + "",
+												allNodes.get(ref.getEOpposite().getEReferenceType()).getKey() + ""));
+							}
+						}
+					} else {
+						if (allNodes.containsKey(ref.getEReferenceType())
+								&& allNodes.containsKey(ref.getEContainingClass())) {
+							allEdges.put(
+									new AbstractMap.SimpleEntry<String, String>("edge",
+											ref.getName() + "   " + ref.getLowerBound() + "..." + ref.getUpperBound()),
+									new AbstractMap.SimpleEntry<String, String>(
+											allNodes.get(ref.getEContainingClass()).getKey() + "",
+											allNodes.get(ref.getEReferenceType()).getKey() + ""));
+						}
+					}
+				});
+				break;
+			}
+		});
+
 	}
 
 	/**
@@ -142,125 +193,54 @@ public class MetaModelHandler extends ModelHandler {
 		return attrStr;
 	}
 
-	/**
-	 * 
-	 */
-	public void extractEdges() {
-		ArrayList<EObject> listForEdges = new ArrayList<EObject>();
-		elist.forEach(current -> {
-			listForEdges.add(current);
-		});
-		ArrayList<String> biDirMergeNames = new ArrayList<>();
-
-		for (int i = 0; i < listForEdges.size(); i++) {
-			for (int k = 0; k < listForEdges.size(); k++) {
-				if (listForEdges.get(i).eClass().getName() == "EClass"
-						&& listForEdges.get(k).eClass().getName() == "EClass" && i != k)
-					if (((EClass) listForEdges.get(i)).isSuperTypeOf((EClass) listForEdges.get(k))) {
-						if (!((EClass) listForEdges.get(i)).isInterface()) {
-							heridityEdges.put(heridityEdgesCounter + "", new AbstractMap.SimpleEntry<String, String>(
-									nodesWithIds.inverse().get(((ENamedElement) listForEdges.get(i)).getName()),
-									nodesWithIds.inverse().get(((ENamedElement) listForEdges.get(k)).getName())));
-							heridityEdgesCounter++;
-						} else {
-							implementsEdges.put(implementEdgesCounter + "", new AbstractMap.SimpleEntry<String, String>(
-									nodesWithIds.inverse().get(((ENamedElement) listForEdges.get(i)).getName()),
-									nodesWithIds.inverse().get(((ENamedElement) listForEdges.get(k)).getName())));
-							implementEdgesCounter++;
-						}
+	@Override
+	public void createNetworkToggle(WebEngine engine) {
+		allNodes.forEach((key, value) -> {
+			switch (key.eClass().getName()) {
+			case "EClass":
+				if (((EClass) key).isAbstract()) {
+					if (((EClass) key).isInterface()) {
+						engine.executeScript(VisJsScriptTemplates.addInterfaceNode(value.getKey(),
+								((EClass) key).getName(), ""));
+					} else {
+						engine.executeScript(VisJsScriptTemplates.addAbstractNode(value.getKey(),
+								((EClass) key).getName(), ""));
 					}
-			}
-
-			EObject current = listForEdges.get(i);
-			ArrayList<String> helpList = new ArrayList<String>();
-			current.eClass().getEAllContainments().forEach(ref -> {
-				if (ref.getEReferenceType().getName() == "EStructuralFeature") {
-					EList<EObject> refList = (EObjectContainmentWithInverseEList) current.eGet(ref);
-					for (int j = 0; j < refList.size(); j++) {
-						helpList.add(((EStructuralFeature) refList.get(j)).getName());
-						if (refList.get(j).eClass().getName() == "EReference") {
-							EReference er = (EReference) refList.get(j);
-							if (checkForDupe(nodesWithIds.inverse().get(er.getEContainingClass().getName()),
-									nodesWithIds.inverse().get(er.getEType().getName()))) {
-								if (er.getEOpposite() != null) {
-									biDirEdges.put(
-											er.getName() + "   " + er.getLowerBound() + "..." + er.getUpperBound(),
-											new AbstractMap.SimpleEntry<String, String>(
-													nodesWithIds.inverse().get(er.getEContainingClass().getName()),
-													nodesWithIds.inverse().get(er.getEType().getName())));
-									continue;
-								}
-
-								if (!edges.containsKey(
-										er.getName() + "   " + er.getLowerBound() + "..." + er.getUpperBound())) {
-									edges.put(er.getName() + "   " + er.getLowerBound() + "..." + er.getUpperBound(),
-											new AbstractMap.SimpleEntry<String, String>(
-													nodesWithIds.inverse().get(er.getEContainingClass().getName()),
-													nodesWithIds.inverse().get(er.getEType().getName())));
-								} else {
-									edges.put(
-											er.getName() + "   " + er.getLowerBound() + "..." + er.getUpperBound()
-													+ " ",
-											new AbstractMap.SimpleEntry<String, String>(
-													nodesWithIds.inverse().get(er.getEContainingClass().getName()),
-													nodesWithIds.inverse().get(er.getEType().getName())));
-
-								}
-							} else {
-								biDirMergeNames
-										.add(er.getName() + "   " + er.getLowerBound() + "..." + er.getUpperBound());
-							}
-						}
-					}
+				} else {
+					engine.executeScript(
+							VisJsScriptTemplates.addNode(value.getKey(), ((EClass) key).getName(), ""));
 				}
-				;
+				break;
+			case "EEnum":
+				engine.executeScript(
+						VisJsScriptTemplates.addEnumNode(value.getKey(), ((EEnum) key).getName(), ""));
 			}
-
-			);
-		}
-//		biDirNamesMerge(biDirMergeNames);
-	}
-
-	/**
-	 * 
-	 * @param mergeList
-	 */
-	private void biDirNamesMerge(ArrayList<String> mergeList) {
-		int i = 0;
-		for (Entry<Entry<String, String>, String> entry : biDirEdges.inverse().entrySet()) {
-			String value = entry.getValue();
-			entry.setValue(value + "\\n" + mergeList.get(i));
-			i++;
-		}
-	}
-	
-	/**
-	 * 
-	 * @param str1
-	 * @param str2
-	 * @return
-	 */
-	private boolean checkForDupe(String str1, String str2) {
-		if (biDirEdges.containsValue(new AbstractMap.SimpleEntry<String, String>(str1, str2))
-				|| biDirEdges.containsValue(new AbstractMap.SimpleEntry<String, String>(str2, str1))) {
-			return false;
-		} else
-			return true;
-	}
-
-
-	public ArrayList<EObject> collectionToArrayList() {
-		ArrayList<EObject> eArrayList = new ArrayList<>();
-		elist.forEach(current -> {
-			eArrayList.add(current);
 		});
+		allEdges.forEach((key, value) -> {
+			switch (key.getKey()) {
+			case "implements":
+				engine.executeScript(VisJsScriptTemplates.addImplementsEdge(value.getKey(), value.getValue()));
+				break;
+			case "heridity":
+				engine.executeScript(VisJsScriptTemplates.addHeridityEdge(value.getKey(), value.getValue()));
+				break;
+			case "biDir":
+				engine.executeScript(
+						VisJsScriptTemplates.addBiDirEdge(value.getKey(), value.getValue(), key.getValue()));
+				break;
+			case "edge":
+				engine.executeScript(VisJsScriptTemplates.addEdge(value.getKey(), value.getValue(), key.getValue()));
+				break;
+			}
+		});
+		engine.executeScript("var network = new vis.Network(container,data, options);");
 
-		return eArrayList;
 	}
 
 	@Override
-	public void refreshWindow() {
+	public void createNetworkWithoutEdges(WebEngine engine) {
 		// TODO Auto-generated method stub
 		
 	}
+
 }

@@ -12,23 +12,29 @@ import javafx.scene.web.WebEngine;
 public class TGGModelHandler extends ModelHandler {
 
 	private Collection<EObject> elist;
-	
+
 	public TGGModelHandler(Collection<EObject> elist) {
 		this.elist = elist;
 	}
-	
-	public void buildVis() {
-		
-	}
 
-	@Override
-	public void refreshWindow() {
-		// TODO Auto-generated method stub
-		
+	public void buildVis() {
+
 	}
 
 	@Override
 	public void createNetwork(WebEngine engine) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void createNetworkToggle(WebEngine engine) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void createNetworkWithoutEdges(WebEngine engine) {
 		// TODO Auto-generated method stub
 		
 	}

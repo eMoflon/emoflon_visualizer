@@ -11,10 +11,12 @@ public abstract class ModelHandler {
 	public ModelHandler() {
 		
 	}
-	public void buildVis() {
-		
-	}
-	public abstract void refreshWindow();
-
+	public abstract void buildVis();
+	
+	public abstract void createNetworkToggle(WebEngine engine);
+	
 	public abstract void createNetwork(WebEngine engine);
+	
+	public abstract void createNetworkWithoutEdges(WebEngine engine);
+
 }

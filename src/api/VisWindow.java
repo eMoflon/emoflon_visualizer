@@ -3,6 +3,7 @@ package api;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -24,7 +25,7 @@ public class VisWindow extends Application implements EventHandler<KeyEvent> {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("VisWindow.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("/view/VisFXMLView.fxml"));
 			Scene scene = new Scene(root);
 			
 			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("emoflon.jpg")));
