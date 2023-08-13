@@ -136,6 +136,7 @@ public class Controller implements Initializable {
 	 */
 
 	public Controller() {
+		
 		ToggleGroup toggleGroup = new ToggleGroup();
 		toggleButtoneclass.setToggleGroup(toggleGroup);
 		toggleButtonabstract.setToggleGroup(toggleGroup);

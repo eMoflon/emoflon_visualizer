@@ -12,7 +12,7 @@ class VisJsScriptTemplates {
 	 */
 	def static String getJSTemplate() {
 		return '''
-				<!DOCTYPE html>
+	<!DOCTYPE html>
 				<html lang="en">
 			 <head>
 			 <title>Network</title>
@@ -72,7 +72,8 @@ class VisJsScriptTemplates {
 «««			                	 			    			 stabilization: true
 «««			                	 			    },
 			           			 };
-			var network = new vis.Network(container, data, options); 	               
+			var network = new vis.Network(container, data, options); 	      	
+			var attrNodes = new Map();						
 			  	   </script>
 			  	 </body>
 			  </html>
@@ -80,22 +81,6 @@ class VisJsScriptTemplates {
 	}
 
 //parametriesieren ud kürzen
-	def static String addXMINode(Integer id, String label) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "«label»", shape: "box", color: { background: "#f4f98b",border: "black"}});'''
-	}
-
-	def static String addXMIEnumNode(Integer id, String label) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "«label»", shape: "box", color: {  background: "#7575f9",border: "black"}});'''
-	}
-
-	def static String addXMIAbstractNode(Integer id, String label) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "«label»", shape: "box", color: { background: "#9ecaf7",border: "black"}});'''
-	}
-
-	def static String addXMIInterfaceNode(Integer id, String label) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "«label»", shape: "box", color: { background: "#ff40ff",border: "black"}});'''
-	}
-
 	def static String addNode(Integer id, String label, String attributes) {
 		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#f9de8b",border: "black"}});'''
 	}
@@ -110,6 +95,22 @@ class VisJsScriptTemplates {
 
 	def static String addInterfaceNode(Integer id, String label, String attributes) {
 		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Interface</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#ff40ff",border: "black"}});'''
+	}
+
+	def static String addAttrNode(Integer id, String label, String attributes) {
+		return '''attrNodes.set("«id»", "«label»");'''
+	}
+
+	def static String addAttrEnumNode(Integer id, String label, String attributes) {
+		return '''attrNodes.set("«id»", "«label»");'''
+	}
+
+	def static String addAttrAbstractNode(Integer id, String label, String attributes) {
+		return '''attrNodes.set("«id»", "«label»");'''
+	}
+
+	def static String addAttrInterfaceNode(Integer id, String label, String attributes) {
+		return '''attrNodes.set("«id»", "«label»");'''
 	}
 
 	def static String addNodes(Map<String, String> nodes) {
@@ -181,6 +182,25 @@ class VisJsScriptTemplates {
 		return '''
 			edges.clear();
 			nodes.clear();
+		'''
+	}
+
+	def static String clickOnNetwork() {
+		return '''
+			network.on("selectNode", function (params) {
+										           			   var selectedNodeId = params.nodes[0];
+										           			   var node = network.body.nodes[selectedNodeId];
+										           			   node.setOptions({
+										           			   	         label : attrNodes.get(selectedNodeId)
+										           			   });
+										           			 });  
+										           			 network.on("deselectNode", function (params) {
+										           			   var deselectedNodeId = params.previousSelection.nodes[0];										           			   
+										           			   var node = network.body.nodes[deselectedNodeId.id];
+										           			   node.setOptions({
+										           			     label : ""
+										           			   });
+										           			 });
 		'''
 	}
 

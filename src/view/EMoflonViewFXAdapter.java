@@ -56,6 +56,7 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 		} else {
 			model.createNetwork(engine);
 		}
+		engine.executeScript(VisJsScriptTemplates.clickOnNetwork());
 		return true;
 	}
 

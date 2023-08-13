@@ -84,7 +84,7 @@ public class MetaModelHandler extends ModelHandler {
 				break;
 			}
 		});
-		engine.executeScript("var network = new vis.Network(container,data, options);");
+//		engine.executeScript("var network = new vis.Network(container,data, options);");
 	}
 
 	/**
@@ -233,7 +233,7 @@ public class MetaModelHandler extends ModelHandler {
 				break;
 			}
 		});
-		engine.executeScript("var network = new vis.Network(container,data, options);");
+//		engine.executeScript("var network = new vis.Network(container,data, options);");
 
 	}
 

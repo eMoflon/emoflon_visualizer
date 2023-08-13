@@ -124,25 +124,33 @@ public class XMIModelHandler extends ModelHandler {
 					if (key.eClass().isInterface()) {
 						engine.executeScript(VisJsScriptTemplates.addInterfaceNode(value.getKey(),
 								key.eClass().getName(), value.getValue()));
+						engine.executeScript(VisJsScriptTemplates.addAttrInterfaceNode(value.getKey(),
+								key.eClass().getName(), ""));
 					} else {
 						engine.executeScript(VisJsScriptTemplates.addAbstractNode(value.getKey(),
 								key.eClass().getName(), value.getValue()));
+						engine.executeScript(VisJsScriptTemplates.addAttrAbstractNode(value.getKey(),
+								key.eClass().getName(), ""));
 					}
 				} else {
 					engine.executeScript(
 							VisJsScriptTemplates.addNode(value.getKey(), key.eClass().getName(), value.getValue()));
+					engine.executeScript(
+							VisJsScriptTemplates.addAttrNode(value.getKey(), key.eClass().getName(), ""));
 				}
 				break;
 			case "EEnum":
 				engine.executeScript(
-						VisJsScriptTemplates.addNode(value.getKey(), ((EEnum) key).getName(), value.getValue()));
+						VisJsScriptTemplates.addEnumNode(value.getKey(), ((EEnum) key).getName(), value.getValue()));
+				engine.executeScript(
+						VisJsScriptTemplates.addAttrEnumNode(value.getKey(), ((EEnum) key).getName(), ""));
 			}
 		});
 		allEdges.forEach((key, value) -> {
 //			engine.executeScript(VisJsScriptTemplates.addEdge(value.getValue().getKey(), value.getValue().getValue(), key.getValue()));
 			engine.executeScript(VisJsScriptTemplates.addEdge(value.getKey(), value.getValue(), key.getValue()));
 		});
-		engine.executeScript("var network = new vis.Network(container,data, options);");
+//		engine.executeScript("var network = new vis.Network(container,data, options);");
 	}
 
 	@Override
@@ -172,7 +180,7 @@ public class XMIModelHandler extends ModelHandler {
 //			engine.executeScript(VisJsScriptTemplates.addEdge(value.getValue().getKey(), value.getValue().getValue(), key.getValue()));
 			engine.executeScript(VisJsScriptTemplates.addEdge(value.getKey(), value.getValue(), key.getValue()));
 		});
-		engine.executeScript("var network = new vis.Network(container,data, options);");
+//		engine.executeScript("var network = new vis.Network(container,data, options);");
 
 	}
 
