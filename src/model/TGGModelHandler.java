@@ -33,10 +33,4 @@ public class TGGModelHandler extends ModelHandler {
 
 	}
 
-	@Override
-	public void createNetworkWithoutEdges(WebEngine engine) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

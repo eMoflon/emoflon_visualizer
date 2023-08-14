@@ -124,33 +124,23 @@ public class XMIModelHandler extends ModelHandler {
 					if (key.eClass().isInterface()) {
 						engine.executeScript(VisJsScriptTemplates.addInterfaceNode(value.getKey(),
 								key.eClass().getName(), value.getValue()));
-						engine.executeScript(VisJsScriptTemplates.addAttrInterfaceNode(value.getKey(),
-								key.eClass().getName(), ""));
 					} else {
 						engine.executeScript(VisJsScriptTemplates.addAbstractNode(value.getKey(),
 								key.eClass().getName(), value.getValue()));
-						engine.executeScript(VisJsScriptTemplates.addAttrAbstractNode(value.getKey(),
-								key.eClass().getName(), ""));
 					}
 				} else {
 					engine.executeScript(
 							VisJsScriptTemplates.addNode(value.getKey(), key.eClass().getName(), value.getValue()));
-					engine.executeScript(
-							VisJsScriptTemplates.addAttrNode(value.getKey(), key.eClass().getName(), ""));
 				}
 				break;
 			case "EEnum":
 				engine.executeScript(
 						VisJsScriptTemplates.addEnumNode(value.getKey(), ((EEnum) key).getName(), value.getValue()));
-				engine.executeScript(
-						VisJsScriptTemplates.addAttrEnumNode(value.getKey(), ((EEnum) key).getName(), ""));
 			}
 		});
 		allEdges.forEach((key, value) -> {
-//			engine.executeScript(VisJsScriptTemplates.addEdge(value.getValue().getKey(), value.getValue().getValue(), key.getValue()));
 			engine.executeScript(VisJsScriptTemplates.addEdge(value.getKey(), value.getValue(), key.getValue()));
 		});
-//		engine.executeScript("var network = new vis.Network(container,data, options);");
 	}
 
 	@Override
@@ -160,34 +150,26 @@ public class XMIModelHandler extends ModelHandler {
 			case "EClass":
 				if (key.eClass().isAbstract()) {
 					if (key.eClass().isInterface()) {
-						engine.executeScript(VisJsScriptTemplates.addInterfaceNode(value.getKey(),
-								key.eClass().getName(), ""));
+						engine.executeScript(
+								VisJsScriptTemplates.addInterfaceClickNode(value.getKey(), key.eClass().getName(), value.getValue()));
 					} else {
-						engine.executeScript(VisJsScriptTemplates.addAbstractNode(value.getKey(),
-								key.eClass().getName(), ""));
+						engine.executeScript(
+								VisJsScriptTemplates.addAbstractClickNode(value.getKey(), key.eClass().getName(), value.getValue()));
 					}
 				} else {
-					engine.executeScript(
-							VisJsScriptTemplates.addNode(value.getKey(), key.eClass().getName(), ""));
+							engine.executeScript(
+									VisJsScriptTemplates.addClickNode(value.getKey(), key.eClass().getName(), value.getValue()));
 				}
 				break;
 			case "EEnum":
 				engine.executeScript(
-						VisJsScriptTemplates.addNode(value.getKey(), ((EEnum) key).getName(), ""));
+						VisJsScriptTemplates.addEnumClickNode(value.getKey(), key.eClass().getName(), value.getValue()));
 			}
 		});
 		allEdges.forEach((key, value) -> {
-//			engine.executeScript(VisJsScriptTemplates.addEdge(value.getValue().getKey(), value.getValue().getValue(), key.getValue()));
 			engine.executeScript(VisJsScriptTemplates.addEdge(value.getKey(), value.getValue(), key.getValue()));
 		});
-//		engine.executeScript("var network = new vis.Network(container,data, options);");
-
 	}
 
-	@Override
-	public void createNetworkWithoutEdges(WebEngine engine) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

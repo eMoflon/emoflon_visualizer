@@ -10,15 +10,16 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.moflon.core.ui.EMoflonView;
 import org.moflon.core.ui.visualisation.common.EMoflonViewVisualizer;
 
-import api.VisJsAdapter;
 import controller.VisFXController;
 import javafx.embed.swt.FXCanvas;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
 import model.ModelHandler;
 import model.ModelRecognizer;
@@ -56,7 +57,6 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 		} else {
 			model.createNetwork(engine);
 		}
-		engine.executeScript(VisJsScriptTemplates.clickOnNetwork());
 		return true;
 	}
 
@@ -74,23 +74,25 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 		fxCanvas.setScene(view_scene);
 		attrButton = new ToggleButton("hide attributes");
 		attrButton.setOnAction(value -> {
-			if(attrButton.isSelected()) {
+			if (attrButton.isSelected()) {
 				attrButton.setText("show attributes");
-			engine.executeScript(VisJsScriptTemplates.destroyNetwork());
-			model.createNetworkToggle(engine);
-			}else {
+				engine.executeScript(VisJsScriptTemplates.destroyNetwork());
+				model.createNetworkToggle(engine);
+				engine.executeScript(VisJsScriptTemplates.clickOnNetworkShowAttributes());
+			} else {
 				attrButton.setText("hide attributes");
 				engine.executeScript(VisJsScriptTemplates.destroyNetwork());
 				model.createNetwork(engine);
+				engine.executeScript(VisJsScriptTemplates.removeClickOnNetworkShowAttributes());
 			}
 		});
 		edgeButton = new ToggleButton("hide edges");
 		edgeButton.setOnAction(value -> {
-			if(edgeButton.isSelected()) {
+			if (edgeButton.isSelected()) {
 				edgeButton.setText("show edges");
-			engine.executeScript(VisJsScriptTemplates.destroyNetwork());
-			model.createNetworkToggle(engine);
-			}else {
+				engine.executeScript(VisJsScriptTemplates.destroyNetwork());
+				model.createNetworkToggle(engine);
+			} else {
 				edgeButton.setText("hide edges");
 				engine.executeScript(VisJsScriptTemplates.destroyNetwork());
 				model.createNetwork(engine);
@@ -104,6 +106,15 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 		edgeButton.setLayoutX(305);
 		edgeButton.setLayoutY(370);
 		fxCanvas.setScene(view_scene);
+		// Add node click
+//		webView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent event) {
+//				if (attrButton.isSelected()) {
+//					engine.executeScript(VisJsScriptTemplates.clickOnNetworkShowAttributes());
+//				}
+//			}
+//		});
 
 	}
 

@@ -12,109 +12,115 @@ class VisJsScriptTemplates {
 	 */
 	def static String getJSTemplate() {
 		return '''
-	<!DOCTYPE html>
-				<html lang="en">
-			 <head>
-			 <title>Network</title>
-			 <script
-			 type="text/javascript"
-			 src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
-			 ></script>
-			 <style type="text/css">
-			 #mynetwork {
-			 width: 500px;
-			 height: 350px;
-			 border: 1px solid lightgray;
-			 }
-			 </style>
-			 </head>
-			 <body>
-			 <div id="mynetwork"></div>
-			 <script type="text/javascript">
-			 var nodes = new vis.DataSet([
-			 ]);
-			 // create an array with edges
-			 var edges = new vis.DataSet([	
-			 ]);
-			 // create a network
-			 var container = document.getElementById("mynetwork");
-			 var data = {
-			        nodes: nodes,
-			        edges: edges,
-			      };
-			           var options = {
-			           	 layout: {			                  	   
-			           	  },
-			           	 edges: {
-			           	 			        style: 'arrow'
-			           	 			    },
-			           	 			manipulation: {
-			           	 				enabled: true,
-			           	 				addNode: true,
-			           	 				},
-			           	 			interaction: { 
-			           	 				dragNodes: true 
-			           	 			},
-«««			           	 			    physics: {
-«««			           	 			    	barnesHut: {
-«««			           	 			    			theta : 0.2,
-«««			           	 			    			    avoidOverlap: 0.35,
-«««			           	 			    			  },
-			           	 			    			                   	 				  edges: {
-			           	 			    			                   	 				    smooth: {
-			           	 			    			                   	 				      type: "continuous",
-			           	 			    			                   	 				    },
-			           	 			    			                   	 				  },
-						                	 			    			 repulsion: {
-			                	 			    			     springLength: 1000,
-			                	 			    			     nodeDistance: 1000,
-			                	 			    			 },
-«««			                	 			    			 stabilization: true
-«««			                	 			    },
-			           			 };
-			var network = new vis.Network(container, data, options); 	      	
-			var attrNodes = new Map();						
-			  	   </script>
-			  	 </body>
-			  </html>
+			<!DOCTYPE html>
+						<html lang="en">
+						<head>
+						<title>Network</title>
+						<script
+						type="text/javascript"
+						src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+						></script>
+						<style type="text/css">
+						#mynetwork {
+						width: 500px;
+						height: 350px;
+						border: 1px solid lightgray;
+						}
+						</style>
+						</head>
+						<body>
+						<div id="mynetwork"></div>
+						<script type="text/javascript">
+						var nodes = new vis.DataSet([
+						]);
+						// create an array with edges
+						var edges = new vis.DataSet([	
+						]);
+						// create a network
+						var container = document.getElementById("mynetwork");
+						var data = {
+						       nodes: nodes,
+						       edges: edges,
+						     };
+						          var options = {
+						          	 layout: {			                  	   
+						          	  },
+						          	 edges: {
+						          	 			        style: 'arrow'
+						          	 			    },
+						          	 			manipulation: {
+						          	 				enabled: true,
+						          	 				addNode: true,
+						          	 				},
+						          	 			interaction: { 
+						          	 				dragNodes: true 
+						          	 			},
+						          	 			    			                   	 				  edges: {
+						          	 			    			                   	 				    smooth: {
+						          	 			    			                   	 				      type: "continuous",
+						          	 			    			                   	 				    },
+						          	 			    			                   	 				  },
+						          	 			   	 			    			 repulsion: {
+						          	 			   	 			    			  springLength: 1000,
+						          	 			   	 			    			  nodeDistance: 1000,
+						          	 				 			    			 },
+						          	 	 };
+					var network = new vis.Network(container, data, options); 	      	
+					var labelNodes = new Map();
+					var attrNodes = new Map();						
+					  	   </script>
+					  	 </body>
+					  </html>
 		'''
 	}
 
 //parametriesieren ud kürzen
 	def static String addNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#f9de8b",border: "black"}});'''
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#f9de8b",border: "black"}});
+		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
+				  labelNodes.set("«id»", "«label»");'''
 	}
 
 	def static String addEnumNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>EEnum</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: {  background: "#7575f9",border: "black"}});'''
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>EEnum</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: {  background: "#7575f9",border: "black"}});
+		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
+				  labelNodes.set("«id»", "«label»");'''
 	}
 
 	def static String addAbstractNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Abstract</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#9ecaf7",border: "black"}});'''
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Abstract</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#9ecaf7",border: "black"}});
+		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
+				  labelNodes.set("«id»", "«label»");'''
 	}
 
 	def static String addInterfaceNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Interface</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#ff40ff",border: "black"}});'''
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Interface</i> \n<code>"+"«label»", shape: "box", color: { background: "#ff40ff",border: "black"}});
+		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
+				  labelNodes.set("«id»", "«label»");'''
 	}
 
-	def static String addAttrNode(Integer id, String label, String attributes) {
-		return '''attrNodes.set("«id»", "«label»");'''
+	def static String addClickNode(Integer id, String label, String attributes) {
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<code>"+"«label»", shape: "box", color: { background: "#f9de8b",border: "black"}});
+		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
+				  labelNodes.set("«id»", "«label»");'''
 	}
 
-	def static String addAttrEnumNode(Integer id, String label, String attributes) {
-		return '''attrNodes.set("«id»", "«label»");'''
+	def static String addEnumClickNode(Integer id, String label, String attributes) {
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>EEnum</i> \n<code>"+"«label»", shape: "box", color: {  background: "#7575f9",border: "black"}});
+		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
+				  labelNodes.set("«id»", "«label»");'''
 	}
 
-	def static String addAttrAbstractNode(Integer id, String label, String attributes) {
-		return '''attrNodes.set("«id»", "«label»");'''
+	def static String addAbstractClickNode(Integer id, String label, String attributes) {
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Abstract</i> \n<code>"+"«label»", shape: "box", color: { background: "#9ecaf7",border: "black"}});
+		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
+				  labelNodes.set("«id»", "«label»");'''
 	}
 
-	def static String addAttrInterfaceNode(Integer id, String label, String attributes) {
-		return '''attrNodes.set("«id»", "«label»");'''
-	}
-
-	def static String addNodes(Map<String, String> nodes) {
-		return '''«FOR node : nodes.keySet SEPARATOR "\n"»nodes.add({ id: "«node»",font: { multi: true }, label: "«nodes.get(node)»", shape: "box", color: { background: "#f9de8b",border: "black"}});«ENDFOR»'''
+	def static String addInterfaceClickNode(Integer id, String label, String attributes) {
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Interface</i> \n<code>"+"«label»", shape: "box", color: { background: "#ff40ff",border: "black"}});
+		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
+				  labelNodes.set("«id»", "«label»");'''
 	}
 
 	def static String addEdge(String from, String to, String label) {
@@ -133,49 +139,16 @@ class VisJsScriptTemplates {
 		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, length: 250, arrows: {from:{enabled: true, type:"vee",}, to: {enabled: true, type:"vee",},},});'''
 	}
 
-	// here
-	def static String addXMINodes(Map<Integer, Entry<String, String>> nodes) {
-		return '''«FOR node : nodes.keySet SEPARATOR "\n"»nodes.add({ id: "«node»",font: { multi: true }, label: "«nodes.get(node).value»", shape: "box", color: { background: "#f9de8b",border: "black"}});«ENDFOR»'''
-	}
-
-	def static String addEnumNodes(Map<String, String> nodes) {
-		return '''«FOR node : nodes.keySet SEPARATOR "\n"»nodes.add({ id: "«node»",font: { multi: true }, label: "«nodes.get(node)»", shape: "box", color: { background: "#7575f9",border: "black"}});«ENDFOR»'''
-	}
-
-	def static String addAbstractNodes(Map<String, String> nodes) {
-		return '''«FOR node : nodes.keySet SEPARATOR "\n"»nodes.add({ id: "«node»",font: { multi: true }, label: "«nodes.get(node)»", shape: "box", color: { background: "#d3d3d3",border: "black"}});«ENDFOR»'''
-	}
-
-	def static String addInterfaceNodes(Map<String, String> nodes) {
-		return '''«FOR node : nodes.keySet SEPARATOR "\n"»nodes.add({ id: "«node»",font: { multi: true }, label: "«nodes.get(node)»", shape: "box", color: { background: "#9ecaf7",border: "black"}});«ENDFOR»'''
-	}
-
-	def static String addEdges(Map<String, Entry<String, String>> edges) {
-		return '''«FOR edge : edges.keySet SEPARATOR "\n"»edges.add({from: «edges.get(edge).key», to: «edges.get(edge).value», label:"«edge»", font: {align: "bottom" }, length: 250, arrows: {from:{ enabled: true, type:"diamond",}, to: {enabled: true, type:"vee",},},});«ENDFOR»'''
-	}
-
-	def static String addBidirectionalEdges(Map<String, Entry<String, String>> edges) {
-		return '''«FOR edge : edges.keySet SEPARATOR "\n"»edges.add({from: «edges.get(edge).key», to: «edges.get(edge).value», label:"«edge»", font: {align: "bottom" }, length: 250, arrows: {from:{enabled: true, type:"vee",}, to: {enabled: true, type:"vee",},},});«ENDFOR»'''
-	}
-
-	def static String addHeridityEdges(Map<String, Entry<String, String>> edges) {
-		return '''«FOR edge : edges.keySet SEPARATOR "\n"»edges.add({from: «edges.get(edge).key», to: «edges.get(edge).value», font: {align: "bottom" }, length: 500, arrows: {from:{enabled: true, type:"triangle",},},});«ENDFOR»'''
-	}
-
-	def static String addImplementsEdges(Map<String, Entry<String, String>> edges) {
-		return '''«FOR edge : edges.keySet SEPARATOR "\n"»edges.add({from: «edges.get(edge).key», to: «edges.get(edge).value», font: {align: "bottom" }, label: "implements", dashes: true, length: 500, arrows: {from:{enabled: true, type:"triangle",},},});«ENDFOR»'''
-	}
-
 	def static String configureNode(String id, Collection<String> properties) {
-		return ''' nodes.update({id: «id», «FOR prop : properties SEPARATOR ", "»«prop»«ENDFOR»});'''
+		return '''nodes.update({id: «id», «FOR prop : properties SEPARATOR ", "»«prop»«ENDFOR»});'''
 	}
 
 	def static String removeNode(String id) {
-		return ''' nodes.remove(«id»)'''
+		return '''nodes.remove(«id»)'''
 	}
 
 	def static String removeEdge(String id) {
-		return ''' edges.remove(«id»)'''
+		return '''edges.remove(«id»)'''
 	}
 
 	def static String destroyNetwork() {
@@ -185,23 +158,29 @@ class VisJsScriptTemplates {
 		'''
 	}
 
-	def static String clickOnNetwork() {
+	def static String clickOnNetworkShowAttributes() {
 		return '''
-			network.on("selectNode", function (params) {
-										           			   var selectedNodeId = params.nodes[0];
-										           			   var node = network.body.nodes[selectedNodeId];
-										           			   node.setOptions({
-										           			   	         label : attrNodes.get(selectedNodeId)
-										           			   });
-										           			 });  
-										           			 network.on("deselectNode", function (params) {
-										           			   var deselectedNodeId = params.previousSelection.nodes[0];										           			   
-										           			   var node = network.body.nodes[deselectedNodeId.id];
-										           			   node.setOptions({
-										           			     label : ""
-										           			   });
-										           			 });
-		'''
+		network.on("selectNode", function (params) {
+		 var selectedNodeId = params.nodes[0];
+		 var node = network.body.nodes[selectedNodeId];
+		 node.setOptions({
+		  label : attrNodes.get(selectedNodeId)
+		 });
+		});
+		  
+		network.on("deselectNode", function (params) {
+		 var deselectedNodeId = params.previousSelection.nodes[0];										           			   
+		 var node = network.body.nodes[deselectedNodeId.id];
+		 node.setOptions({
+		  label : labelNodes.get(deselectedNodeId.id)
+		 });
+		});'''
 	}
 
+	def static String removeClickOnNetworkShowAttributes() {
+		return '''
+			network.off("selectNode");  
+			network.off("deselectNode");	
+		'''
+	}
 }

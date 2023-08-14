@@ -16,7 +16,5 @@ public abstract class ModelHandler {
 	public abstract void createNetworkToggle(WebEngine engine);
 	
 	public abstract void createNetwork(WebEngine engine);
-	
-	public abstract void createNetworkWithoutEdges(WebEngine engine);
 
 }

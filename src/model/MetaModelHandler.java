@@ -41,52 +41,7 @@ public class MetaModelHandler extends ModelHandler {
 		extractEdges();
 
 	}
-
-	/**
-	 * 
-	 */
-	public void createNetwork(WebEngine engine) {
-		allNodes.forEach((key, value) -> {
-			switch (key.eClass().getName()) {
-			case "EClass":
-				if (((EClass) key).isAbstract()) {
-					if (((EClass) key).isInterface()) {
-						engine.executeScript(VisJsScriptTemplates.addInterfaceNode(value.getKey(),
-								((EClass) key).getName(), value.getValue()));
-					} else {
-						engine.executeScript(VisJsScriptTemplates.addAbstractNode(value.getKey(),
-								((EClass) key).getName(), value.getValue()));
-					}
-				} else {
-					engine.executeScript(
-							VisJsScriptTemplates.addNode(value.getKey(), ((EClass) key).getName(), value.getValue()));
-				}
-				break;
-			case "EEnum":
-				engine.executeScript(
-						VisJsScriptTemplates.addEnumNode(value.getKey(), ((EEnum) key).getName(), value.getValue()));
-			}
-		});
-		allEdges.forEach((key, value) -> {
-			switch (key.getKey()) {
-			case "implements":
-				engine.executeScript(VisJsScriptTemplates.addImplementsEdge(value.getKey(), value.getValue()));
-				break;
-			case "heridity":
-				engine.executeScript(VisJsScriptTemplates.addHeridityEdge(value.getKey(), value.getValue()));
-				break;
-			case "biDir":
-				engine.executeScript(
-						VisJsScriptTemplates.addBiDirEdge(value.getKey(), value.getValue(), key.getValue()));
-				break;
-			case "edge":
-				engine.executeScript(VisJsScriptTemplates.addEdge(value.getKey(), value.getValue(), key.getValue()));
-				break;
-			}
-		});
-//		engine.executeScript("var network = new vis.Network(container,data, options);");
-	}
-
+	
 	/**
 	 * 
 	 */
@@ -192,28 +147,30 @@ public class MetaModelHandler extends ModelHandler {
 			attrStr = attrStr + str;
 		return attrStr;
 	}
-
-	@Override
-	public void createNetworkToggle(WebEngine engine) {
+	
+	/**
+	 * 
+	 */
+	public void createNetwork(WebEngine engine) {
 		allNodes.forEach((key, value) -> {
 			switch (key.eClass().getName()) {
 			case "EClass":
 				if (((EClass) key).isAbstract()) {
 					if (((EClass) key).isInterface()) {
 						engine.executeScript(VisJsScriptTemplates.addInterfaceNode(value.getKey(),
-								((EClass) key).getName(), ""));
+								((EClass) key).getName(), value.getValue()));
 					} else {
 						engine.executeScript(VisJsScriptTemplates.addAbstractNode(value.getKey(),
-								((EClass) key).getName(), ""));
+								((EClass) key).getName(), value.getValue()));
 					}
 				} else {
 					engine.executeScript(
-							VisJsScriptTemplates.addNode(value.getKey(), ((EClass) key).getName(), ""));
+							VisJsScriptTemplates.addNode(value.getKey(), ((EClass) key).getName(), value.getValue()));
 				}
 				break;
 			case "EEnum":
 				engine.executeScript(
-						VisJsScriptTemplates.addEnumNode(value.getKey(), ((EEnum) key).getName(), ""));
+						VisJsScriptTemplates.addEnumNode(value.getKey(), ((EEnum) key).getName(), value.getValue()));
 			}
 		});
 		allEdges.forEach((key, value) -> {
@@ -233,14 +190,50 @@ public class MetaModelHandler extends ModelHandler {
 				break;
 			}
 		});
-//		engine.executeScript("var network = new vis.Network(container,data, options);");
-
 	}
 
 	@Override
-	public void createNetworkWithoutEdges(WebEngine engine) {
-		// TODO Auto-generated method stub
-		
+	public void createNetworkToggle(WebEngine engine) {
+		allNodes.forEach((key, value) -> {
+			switch (key.eClass().getName()) {
+			case "EClass":
+				if (((EClass) key).isAbstract()) {
+					if (((EClass) key).isInterface()) {
+						engine.executeScript(VisJsScriptTemplates.addInterfaceClickNode(value.getKey(),
+								((EClass) key).getName(), value.getValue()));
+					} else {
+						engine.executeScript(VisJsScriptTemplates.addAbstractClickNode(value.getKey(),
+								((EClass) key).getName(), value.getValue()));
+					}
+				} else {
+					engine.executeScript(
+							VisJsScriptTemplates.addClickNode(value.getKey(), ((EClass) key).getName(), value.getValue()));
+				}
+				break;
+			case "EEnum":
+				engine.executeScript(
+						VisJsScriptTemplates.addEnumClickNode(value.getKey(), ((EEnum) key).getName(), value.getValue()));
+			}
+		});
+		allEdges.forEach((key, value) -> {
+			switch (key.getKey()) {
+			case "implements":
+				engine.executeScript(VisJsScriptTemplates.addImplementsEdge(value.getKey(), value.getValue()));
+				break;
+			case "heridity":
+				engine.executeScript(VisJsScriptTemplates.addHeridityEdge(value.getKey(), value.getValue()));
+				break;
+			case "biDir":
+				engine.executeScript(
+						VisJsScriptTemplates.addBiDirEdge(value.getKey(), value.getValue(), key.getValue()));
+				break;
+			case "edge":
+				engine.executeScript(VisJsScriptTemplates.addEdge(value.getKey(), value.getValue(), key.getValue()));
+				break;
+			}
+		});
+
 	}
+
 
 }
