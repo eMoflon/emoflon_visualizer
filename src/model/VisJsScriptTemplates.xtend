@@ -43,17 +43,15 @@ class VisJsScriptTemplates {
 						       edges: edges,
 						     };
 						          var options = {
-						          	 layout: {			                  	   
-						          	  },
-						          	 edges: {
-						          	 			        style: 'arrow'
-						          	 			    },
-						          	 			manipulation: {
-						          	 				enabled: true,
-						          	 				addNode: true,
-						          	 				},
+						          	  autoResize: true,
+						          	 physics: {
+						          	     "enabled": true
+						          	 },
 						          	 			interaction: { 
-						          	 				dragNodes: true 
+						          	 				multiselect: true,
+						          	 				dragNodes: true,
+						          	 				navigationButtons: true,
+						          					keyboard: true
 						          	 			},
 						          	 			    			                   	 				  edges: {
 						          	 			    			                   	 				    smooth: {
@@ -67,7 +65,7 @@ class VisJsScriptTemplates {
 						          	 	 };
 					var network = new vis.Network(container, data, options); 	      	
 					var labelNodes = new Map();
-					var attrNodes = new Map();						
+					var attrNodes = new Map();	
 					  	   </script>
 					  	 </body>
 					  </html>
@@ -161,21 +159,26 @@ class VisJsScriptTemplates {
 	def static String clickOnNetworkShowAttributes() {
 		return '''
 		network.on("selectNode", function (params) {
-		 var selectedNodeId = params.nodes[0];
-		 var node = network.body.nodes[selectedNodeId];
-		 node.setOptions({
-		  label : attrNodes.get(selectedNodeId)
-		 });
-		});
+			params.nodes.forEach((nodeId) =>
+				network.body.nodes[nodeId].setOptions({
+					label : attrNodes.get(nodeId)
+					})
+					);
+						});
 		  
 		network.on("deselectNode", function (params) {
-		 var deselectedNodeId = params.previousSelection.nodes[0];										           			   
-		 var node = network.body.nodes[deselectedNodeId.id];
-		 node.setOptions({
-		  label : labelNodes.get(deselectedNodeId.id)
-		 });
-		});'''
+				params.previousSelection.nodes.forEach((nodeId) =>
+							network.body.nodes[nodeId.id].setOptions({
+								label : labelNodes.get(nodeId.id)
+								})
+								);
+									});
+		'''
 	}
+		def static String autoSizeNetwork() {
+		return '''bestFit();'''
+	}
+	
 
 	def static String removeClickOnNetworkShowAttributes() {
 		return '''

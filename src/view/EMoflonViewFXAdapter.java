@@ -106,15 +106,6 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 		edgeButton.setLayoutX(305);
 		edgeButton.setLayoutY(370);
 		fxCanvas.setScene(view_scene);
-		// Add node click
-//		webView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent event) {
-//				if (attrButton.isSelected()) {
-//					engine.executeScript(VisJsScriptTemplates.clickOnNetworkShowAttributes());
-//				}
-//			}
-//		});
 
 	}
 
