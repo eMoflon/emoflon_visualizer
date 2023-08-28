@@ -51,7 +51,7 @@ class VisJsScriptTemplates {
 						          	 				multiselect: true,
 						          	 				dragNodes: true,
 						          	 				navigationButtons: true,
-						          					keyboard: true
+						          	 			keyboard: true
 						          	 			},
 						          	 			    			                   	 				  edges: {
 						          	 			    			                   	 				    smooth: {
@@ -65,7 +65,8 @@ class VisJsScriptTemplates {
 						          	 	 };
 					var network = new vis.Network(container, data, options); 	      	
 					var labelNodes = new Map();
-					var attrNodes = new Map();	
+					var attrNodes = new Map();
+					var optionNodes = new Map();		
 					  	   </script>
 					  	 </body>
 					  </html>
@@ -76,49 +77,29 @@ class VisJsScriptTemplates {
 	def static String addNode(Integer id, String label, String attributes) {
 		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#f9de8b",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
-				  labelNodes.set("«id»", "«label»");'''
+				  labelNodes.set("«id»", "«label»");
+				  optionNodes.set("«id»", "#f9de8b");'''
 	}
 
 	def static String addEnumNode(Integer id, String label, String attributes) {
 		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>EEnum</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: {  background: "#7575f9",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
-				  labelNodes.set("«id»", "«label»");'''
+				  labelNodes.set("«id»", "«label»");
+				  optionNodes.set("«id»", "#7575f9");'''
 	}
 
 	def static String addAbstractNode(Integer id, String label, String attributes) {
 		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Abstract</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#9ecaf7",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
-				  labelNodes.set("«id»", "«label»");'''
+				  labelNodes.set("«id»", "«label»");
+				  optionNodes.set("«id»", "#9ecaf7");'''
 	}
 
 	def static String addInterfaceNode(Integer id, String label, String attributes) {
 		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Interface</i> \n<code>"+"«label»", shape: "box", color: { background: "#ff40ff",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
-				  labelNodes.set("«id»", "«label»");'''
-	}
-
-	def static String addClickNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<code>"+"«label»", shape: "box", color: { background: "#f9de8b",border: "black"}});
-		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
-				  labelNodes.set("«id»", "«label»");'''
-	}
-
-	def static String addEnumClickNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>EEnum</i> \n<code>"+"«label»", shape: "box", color: {  background: "#7575f9",border: "black"}});
-		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
-				  labelNodes.set("«id»", "«label»");'''
-	}
-
-	def static String addAbstractClickNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Abstract</i> \n<code>"+"«label»", shape: "box", color: { background: "#9ecaf7",border: "black"}});
-		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
-				  labelNodes.set("«id»", "«label»");'''
-	}
-
-	def static String addInterfaceClickNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Interface</i> \n<code>"+"«label»", shape: "box", color: { background: "#ff40ff",border: "black"}});
-		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
-				  labelNodes.set("«id»", "«label»");'''
+				  labelNodes.set("«id»", "«label»");
+				  optionNodes.set("«id»","#ff40ff");'''
 	}
 
 	def static String addEdge(String from, String to, String label) {
@@ -158,27 +139,45 @@ class VisJsScriptTemplates {
 
 	def static String clickOnNetworkShowAttributes() {
 		return '''
-		network.on("selectNode", function (params) {
-			params.nodes.forEach((nodeId) =>
-				network.body.nodes[nodeId].setOptions({
-					label : attrNodes.get(nodeId)
-					})
-					);
-						});
-		  
-		network.on("deselectNode", function (params) {
-				params.previousSelection.nodes.forEach((nodeId) =>
-							network.body.nodes[nodeId.id].setOptions({
-								label : labelNodes.get(nodeId.id)
-								})
-								);
-									});
+			network.on("selectNode", function (params) {
+				params.nodes.forEach((nodeId) =>
+					network.body.nodes[nodeId].setOptions({
+						label : attrNodes.get(nodeId)
+						})
+						);
+							});
+					
+			network.on("deselectNode", function (params) {
+					params.previousSelection.nodes.forEach((nodeId) =>
+								network.body.nodes[nodeId.id].setOptions({
+									label : labelNodes.get(nodeId.id)
+									})
+									);
+										});
 		'''
 	}
-		def static String autoSizeNetwork() {
-		return '''bestFit();'''
+
+	def static String hideAllAttributes(Integer idCounter) {
+		return '''for (let i=«idCounter»; i >= 0; i--) {
+			nodes.update({id:i.toString(), label : labelNodes.get(i.toString())});
+		}'''
 	}
-	
+
+	def static String showAllAttributes(Integer idCounter) {
+		return '''for (let i=«idCounter»; i >= 0; i--) {
+			nodes.update({id:i.toString(), label : attrNodes.get(i.toString())});
+		}'''
+	}
+
+	def static String hightlightChoiceNodes(Integer idCounter) {
+		return '''nodes.update({id:"«idCounter»", color : {background: "#FF0000",border: "black"}});'''
+	}
+
+	def static String deHightlightChoiceNodes(Integer idCounter) {
+		return '''for (let i=«idCounter»; i >= 0; i--) {
+					nodes.update({id:i.toString(), color : {background: optionNodes.get(i.toString()),border: "black"}});
+				}'''
+	}
 
 	def static String removeClickOnNetworkShowAttributes() {
 		return '''

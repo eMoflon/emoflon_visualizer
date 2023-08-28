@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EEnumLiteral;
+import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -17,6 +19,7 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 
 import com.google.common.collect.HashBiMap;
 
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.web.WebEngine;
 
 public class MetaModelHandler extends ModelHandler {
@@ -27,6 +30,10 @@ public class MetaModelHandler extends ModelHandler {
 	private HashBiMap<EObject, Entry<Integer, String>> allNodes = HashBiMap.create();
 	private HashMap<Entry<String, String>, Entry<String, String>> allEdges = new HashMap<Entry<String, String>, Entry<String, String>>();
 
+	/**
+	 * 
+	 * @param elist
+	 */
 	public MetaModelHandler(Collection<EObject> elist) {
 		this.elist = elist;
 		this.nodeId = 0;
@@ -41,7 +48,7 @@ public class MetaModelHandler extends ModelHandler {
 		extractEdges();
 
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -77,14 +84,17 @@ public class MetaModelHandler extends ModelHandler {
 				allNodes.forEach((k, v) -> {
 					if (!current.equals(k) && k.eClass().getName() != "EEnum") {
 						if (((EClass) current).isSuperTypeOf((EClass) k)) {
-							if (((EClass) current).isInterface()) {
+							if (((EClass) current).isInterface() && allNodes.containsKey(current)) {
 								allEdges.put(new AbstractMap.SimpleEntry<String, String>("implements", edgeId++ + ""),
 										new AbstractMap.SimpleEntry<String, String>(allNodes.get(current).getKey() + "",
 												allNodes.get(k).getKey() + ""));
 							} else {
-								allEdges.put(new AbstractMap.SimpleEntry<String, String>("heridity", edgeId++ + ""),
-										new AbstractMap.SimpleEntry<String, String>(allNodes.get(current).getKey() + "",
-												allNodes.get(k).getKey() + ""));
+								if (allNodes.containsKey(current)) {
+									allEdges.put(new AbstractMap.SimpleEntry<String, String>("heridity", edgeId++ + ""),
+											new AbstractMap.SimpleEntry<String, String>(
+													allNodes.get(current).getKey() + "",
+													allNodes.get(k).getKey() + ""));
+								}
 							}
 						}
 					}
@@ -147,7 +157,7 @@ public class MetaModelHandler extends ModelHandler {
 			attrStr = attrStr + str;
 		return attrStr;
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -192,48 +202,68 @@ public class MetaModelHandler extends ModelHandler {
 		});
 	}
 
+	/**
+	 * 
+	 */
 	@Override
-	public void createNetworkToggle(WebEngine engine) {
+	public List<String> computeitems() {
+		List<String> availableEClasses = new ArrayList<String>();
 		allNodes.forEach((key, value) -> {
 			switch (key.eClass().getName()) {
 			case "EClass":
-				if (((EClass) key).isAbstract()) {
-					if (((EClass) key).isInterface()) {
-						engine.executeScript(VisJsScriptTemplates.addInterfaceClickNode(value.getKey(),
-								((EClass) key).getName(), value.getValue()));
-					} else {
-						engine.executeScript(VisJsScriptTemplates.addAbstractClickNode(value.getKey(),
-								((EClass) key).getName(), value.getValue()));
-					}
-				} else {
-					engine.executeScript(
-							VisJsScriptTemplates.addClickNode(value.getKey(), ((EClass) key).getName(), value.getValue()));
+				if (!availableEClasses.contains(((EClass) key).getName()))
+					availableEClasses.add(((EClass) key).getName());
+				break;
+			case "EEnum":
+				if (!availableEClasses.contains(((EEnum) key).getName()))
+					availableEClasses.add(((EEnum) key).getName());
+				break;
+			}
+		});
+		return availableEClasses;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public List<Integer> getChoiceIds(String filterWord) {
+		List<Integer> choiceIds = new ArrayList<Integer>();
+		allNodes.forEach((key, value) -> {
+			switch (key.eClass().getName()) {
+			case "EClass":
+				if (((EClass) key).getName().equals(filterWord)) {
+					choiceIds.add(value.getKey());
 				}
 				break;
 			case "EEnum":
-				engine.executeScript(
-						VisJsScriptTemplates.addEnumClickNode(value.getKey(), ((EEnum) key).getName(), value.getValue()));
-			}
-		});
-		allEdges.forEach((key, value) -> {
-			switch (key.getKey()) {
-			case "implements":
-				engine.executeScript(VisJsScriptTemplates.addImplementsEdge(value.getKey(), value.getValue()));
-				break;
-			case "heridity":
-				engine.executeScript(VisJsScriptTemplates.addHeridityEdge(value.getKey(), value.getValue()));
-				break;
-			case "biDir":
-				engine.executeScript(
-						VisJsScriptTemplates.addBiDirEdge(value.getKey(), value.getValue(), key.getValue()));
-				break;
-			case "edge":
-				engine.executeScript(VisJsScriptTemplates.addEdge(value.getKey(), value.getValue(), key.getValue()));
+				if (((EEnum) key).getName().equals(filterWord)) {
+					choiceIds.add(value.getKey());
+				}
 				break;
 			}
+			if (key.eClass().getName().equals(filterWord)) {
+				choiceIds.add(value.getKey());
+			}
 		});
-
+		return choiceIds;
 	}
 
+	/**
+	 * 
+	 */
+	@Override
+	public int getNodeId() {
+		return nodeId - 1;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public List<Integer> getTextFieldIds(String filterWord) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -20,8 +21,14 @@ import org.eclipse.emf.ecore.util.EcoreEList;
 
 import com.google.common.collect.HashBiMap;
 
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.web.WebEngine;
 
+/**
+ * 
+ * @author ms21xino
+ *
+ */
 public class XMIModelHandler extends ModelHandler {
 
 	private Collection<EObject> elist;
@@ -87,24 +94,24 @@ public class XMIModelHandler extends ModelHandler {
 	 * 
 	 */
 	public void extractEdges() {
-		elist.forEach(current -> {
-			current.eClass().getEAllReferences().forEach(ref -> {
-				if (!(current.eGet(ref) == null)) {
-					if (current.eGet(ref).getClass().equals(EcoreEList.Dynamic.class)) {
-						((EcoreEList.Dynamic<EObject>) (current.eGet(ref))).forEach(obj -> {
+		allNodes.forEach((key, value) -> {
+			key.eClass().getEAllReferences().forEach(ref -> {
+				if (!(key.eGet(ref) == null)) {
+					if (key.eGet(ref).getClass().equals(EcoreEList.Dynamic.class)) {
+						((EcoreEList.Dynamic<EObject>) (key.eGet(ref))).forEach(obj -> {
 							if (allNodes.containsKey(obj)) {
 								allEdges.putIfAbsent(
 										new AbstractMap.SimpleEntry<Integer, String>(edgeId++, ref.getName()),
-										new AbstractMap.SimpleEntry<String, String>(allNodes.get(current).getKey() + "",
+										new AbstractMap.SimpleEntry<String, String>(allNodes.get(key).getKey() + "",
 												allNodes.get(obj).getKey() + ""));
 							}
 						});
 					}
-					if (current.eGet(ref).getClass().equals(DynamicEObjectImpl.class)) {
-						if (allNodes.containsKey(current.eGet(ref))) {
+					if (key.eGet(ref).getClass().equals(DynamicEObjectImpl.class)) {
+						if (allNodes.containsKey(key.eGet(ref))) {
 							allEdges.putIfAbsent(new AbstractMap.SimpleEntry<Integer, String>(edgeId++, ref.getName()),
-									new AbstractMap.SimpleEntry<String, String>(allNodes.get(current).getKey() + "",
-											allNodes.get(current.eGet(ref)).getKey() + ""));
+									new AbstractMap.SimpleEntry<String, String>(allNodes.get(key).getKey() + "",
+											allNodes.get(key.eGet(ref)).getKey() + ""));
 						}
 					}
 				}
@@ -123,19 +130,19 @@ public class XMIModelHandler extends ModelHandler {
 				if (key.eClass().isAbstract()) {
 					if (key.eClass().isInterface()) {
 						engine.executeScript(VisJsScriptTemplates.addInterfaceNode(value.getKey(),
-								key.eClass().getName(), value.getValue()));
+								"name = " + key.eClass().getName(), value.getValue()));
 					} else {
 						engine.executeScript(VisJsScriptTemplates.addAbstractNode(value.getKey(),
-								key.eClass().getName(), value.getValue()));
+								"name = " + key.eClass().getName(), value.getValue()));
 					}
 				} else {
-					engine.executeScript(
-							VisJsScriptTemplates.addNode(value.getKey(), key.eClass().getName(), value.getValue()));
+					engine.executeScript(VisJsScriptTemplates.addNode(value.getKey(),
+							"name = " + key.eClass().getName(), value.getValue()));
 				}
 				break;
 			case "EEnum":
-				engine.executeScript(
-						VisJsScriptTemplates.addEnumNode(value.getKey(), ((EEnum) key).getName(), value.getValue()));
+				engine.executeScript(VisJsScriptTemplates.addEnumNode(value.getKey(),
+						"name = " + ((EEnum) key).getName(), value.getValue()));
 			}
 		});
 		allEdges.forEach((key, value) -> {
@@ -143,33 +150,47 @@ public class XMIModelHandler extends ModelHandler {
 		});
 	}
 
+	/**
+	 * 
+	 */
 	@Override
-	public void createNetworkToggle(WebEngine engine) {
+	public List<String> computeitems() {
+		List<String> availableEClasses = new ArrayList<String>();
 		allNodes.forEach((key, value) -> {
-			switch (key.eClass().eClass().getName()) {
-			case "EClass":
-				if (key.eClass().isAbstract()) {
-					if (key.eClass().isInterface()) {
-						engine.executeScript(
-								VisJsScriptTemplates.addInterfaceClickNode(value.getKey(), key.eClass().getName(), value.getValue()));
-					} else {
-						engine.executeScript(
-								VisJsScriptTemplates.addAbstractClickNode(value.getKey(), key.eClass().getName(), value.getValue()));
-					}
-				} else {
-							engine.executeScript(
-									VisJsScriptTemplates.addClickNode(value.getKey(), key.eClass().getName(), value.getValue()));
-				}
-				break;
-			case "EEnum":
-				engine.executeScript(
-						VisJsScriptTemplates.addEnumClickNode(value.getKey(), key.eClass().getName(), value.getValue()));
-			}
+			if (!availableEClasses.contains(key.eClass().getName()))
+				availableEClasses.add(key.eClass().getName());
 		});
-		allEdges.forEach((key, value) -> {
-			engine.executeScript(VisJsScriptTemplates.addEdge(value.getKey(), value.getValue(), key.getValue()));
-		});
+		return availableEClasses;
 	}
 
+	/**
+	 * 
+	 */
+	@Override
+	public List<Integer> getChoiceIds(String filterWord) {
+		List<Integer> choiceIds = new ArrayList<Integer>();
+		allNodes.forEach((key, value) -> {
+			if (key.eClass().getName().equals(filterWord)) {
+				choiceIds.add(value.getKey());
+			}
+		});
+		return choiceIds;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public int getNodeId() {
+		return nodeId - 1;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public List<Integer> getTextFieldIds(String filterWord) {
+		return null;
+	}
 
 }

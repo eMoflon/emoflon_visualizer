@@ -1,12 +1,14 @@
 package model;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.eclipse.emf.ecore.EObject;
 
 import com.google.common.collect.HashBiMap;
 
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.web.WebEngine;
 
 public class TGGModelHandler extends ModelHandler {
@@ -28,9 +30,29 @@ public class TGGModelHandler extends ModelHandler {
 	}
 
 	@Override
-	public void createNetworkToggle(WebEngine engine) {
+	public List<String> computeitems() {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
+
+	@Override
+	public List<Integer> getChoiceIds(String filterWord) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getNodeId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Integer> getTextFieldIds(String filterWord) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
+
+
