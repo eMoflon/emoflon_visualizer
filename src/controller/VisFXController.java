@@ -140,7 +140,7 @@ public class VisFXController {
 		});
 		return cb;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -151,7 +151,7 @@ public class VisFXController {
 		choiceBoxLabel.setLayoutY(373);
 		return choiceBoxLabel;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -160,14 +160,15 @@ public class VisFXController {
 		TextField filterTextField = new TextField();
 		filterTextField.setLayoutX(220);
 		filterTextField.setLayoutY(400);
-		filterTextField.setOnAction(e_->{
+		filterTextField.setOnAction(e_ -> {
+			engine.executeScript(VisJsScriptTemplates.deHightlightChoiceNodes(model.getNodeId()));
 			model.getTextFieldIds(filterTextField.getText()).forEach(id -> {
 				engine.executeScript(VisJsScriptTemplates.hightlightChoiceNodes(id));
 			});
 		});
 		return filterTextField;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -178,5 +179,5 @@ public class VisFXController {
 		choiceBoxLabel.setLayoutY(400);
 		return choiceBoxLabel;
 	}
-	
+
 }

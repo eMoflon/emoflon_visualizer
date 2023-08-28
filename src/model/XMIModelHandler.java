@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.util.EcoreEList;
 
 import com.google.common.collect.HashBiMap;
 
+import controller.TextFieldPatternMatcher;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.web.WebEngine;
 
@@ -190,7 +191,13 @@ public class XMIModelHandler extends ModelHandler {
 	 */
 	@Override
 	public List<Integer> getTextFieldIds(String filterWord) {
-		return null;
+		List<Integer> textFieldIds = new ArrayList<Integer>();
+		allNodes.forEach((key, value) -> {
+			if (TextFieldPatternMatcher.matchTextFieldInput(filterWord, value.getValue())) {
+				textFieldIds.add(value.getKey());
+			}
+		});
+		return textFieldIds;
 	}
 
 }

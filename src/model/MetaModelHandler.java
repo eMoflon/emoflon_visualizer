@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 
 import com.google.common.collect.HashBiMap;
 
+import controller.TextFieldPatternMatcher;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.web.WebEngine;
 
@@ -256,14 +257,19 @@ public class MetaModelHandler extends ModelHandler {
 	public int getNodeId() {
 		return nodeId - 1;
 	}
-	
+
 	/**
 	 * 
 	 */
 	@Override
 	public List<Integer> getTextFieldIds(String filterWord) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Integer> textFieldIds = new ArrayList<Integer>();
+		allNodes.forEach((key, value) -> {
+			if (TextFieldPatternMatcher.matchTextFieldInput(filterWord, value.getValue())) {
+				textFieldIds.add(value.getKey());
+			}
+		});
+		return textFieldIds;
 	}
 
 }
