@@ -53,6 +53,12 @@ public class TGGModelHandler extends ModelHandler {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<Integer> getNonHighlightIds(List<Integer> highlightIds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 
 

@@ -272,4 +272,17 @@ public class MetaModelHandler extends ModelHandler {
 		return textFieldIds;
 	}
 
+	/**
+	 * 
+	 */
+	@Override
+	public List<Integer> getNonHighlightIds(List<Integer> highlightIds) {
+		List<Integer> nonhighlightIds = new ArrayList<Integer>();
+		allNodes.forEach((key, value) -> {
+			if (!highlightIds.contains(value.getKey())) 
+				nonhighlightIds.add(value.getKey());
+		});
+		return nonhighlightIds;
+	}
+
 }

@@ -24,7 +24,10 @@ public abstract class ModelHandler {
 	
 	public abstract List<Integer> getTextFieldIds(String filterWord);
 	
+	public abstract List<Integer> getNonHighlightIds(List<Integer> highlightIds);
+	
 	public abstract int getNodeId();
+	
 	
 
 }

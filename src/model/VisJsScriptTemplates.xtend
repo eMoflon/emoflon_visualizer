@@ -169,14 +169,22 @@ class VisJsScriptTemplates {
 		}'''
 	}
 
-	def static String hightlightChoiceNodes(Integer idCounter) {
-		return '''nodes.update({id:"«idCounter»", color : {background: "#FF0000",border: "black"}});'''
+	def static String hightlightChoiceNodes(Integer id) {
+		return '''nodes.update({id:"«id»", color : {background: "#FF0000",border: "black"}});'''
 	}
 
 	def static String deHightlightChoiceNodes(Integer idCounter) {
 		return '''for (let i=«idCounter»; i >= 0; i--) {
 					nodes.update({id:i.toString(), color : {background: optionNodes.get(i.toString()),border: "black"}});
 				}'''
+	}
+
+	def static String hideNode(Integer id) {
+		return '''nodes.update({id:"«id»", hidden : true});'''
+	}
+
+	def static String showNode(Integer id) {
+		return '''nodes.update({id:"«id»", label : attrNodes.get("«id»") , shape: "box", color: { background: optionNodes.get("«id»"),border: "black"}, hidden : false});'''
 	}
 
 	def static String removeClickOnNetworkShowAttributes() {
