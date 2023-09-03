@@ -45,19 +45,21 @@ class VisJsScriptTemplates {
 						          var options = {
 						          	  autoResize: true,
 						          	 physics: {
-						          	     "enabled": true
+						          	     "enabled": true,
+						          	     avoidOverlap: 1,
+						          	     stabilization: true
 						          	 },
 						          	 			interaction: { 
 						          	 				multiselect: true,
-						          	 				dragNodes: true,
+«««						          	 				dragNodes: true,
 						          	 				navigationButtons: true,
 						          	 			keyboard: true
 						          	 			},
-						          	 			    			                   	 				  edges: {
-						          	 			    			                   	 				    smooth: {
-						          	 			    			                   	 				      type: "continuous",
-						          	 			    			                   	 				    },
-						          	 			    			                   	 				  },
+«««						          	 			    			                   	 				  edges: {
+«««						          	 			    			                   	 				    smooth: {
+«««						          	 			    			                   	 				      type: "continuous",
+«««						          	 			    			                   	 				    },
+«««						          	 			    			                   	 				  },
 						          	 			   	 			    			 repulsion: {
 						          	 			   	 			    			  springLength: 1000,
 						          	 			   	 			    			  nodeDistance: 1000,
@@ -75,35 +77,35 @@ class VisJsScriptTemplates {
 
 //parametriesieren ud kürzen
 	def static String addNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#f9de8b",border: "black"}});
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#93bae2",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
 				  labelNodes.set("«id»", "«label»");
-				  optionNodes.set("«id»", "#f9de8b");'''
+				  optionNodes.set("«id»", "#93bae2");'''
 	}
 
 	def static String addEnumNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>EEnum</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: {  background: "#7575f9",border: "black"}});
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>EEnum</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: {  background: "#e2bb93",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
 				  labelNodes.set("«id»", "«label»");
-				  optionNodes.set("«id»", "#7575f9");'''
+				  optionNodes.set("«id»", "#e2bb93");'''
 	}
 
 	def static String addAbstractNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Abstract</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#9ecaf7",border: "black"}});
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Abstract</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#e3edf7",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
 				  labelNodes.set("«id»", "«label»");
-				  optionNodes.set("«id»", "#9ecaf7");'''
+				  optionNodes.set("«id»", "#e3edf7");'''
 	}
 
 	def static String addInterfaceNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Interface</i> \n<code>"+"«label»", shape: "box", color: { background: "#ff40ff",border: "black"}});
+		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Interface</i> \n<code>"+"«label»", shape: "box", color: { background: "#c1e1c1",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
 				  labelNodes.set("«id»", "«label»");
-				  optionNodes.set("«id»","#ff40ff");'''
+				  optionNodes.set("«id»","#c1e1c1");'''
 	}
 
 	def static String addEdge(String from, String to, String label) {
-		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, length: 250, arrows: {from:{ enabled: true, type:"diamond",}, to: {enabled: true, type:"vee",},},});'''
+		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, length: 300, arrows: {from:{ enabled: true, type:"diamond",}, to: {enabled: true, type:"vee",},},});'''
 	}
 
 	def static String addHeridityEdge(String from, String to) {
@@ -115,7 +117,7 @@ class VisJsScriptTemplates {
 	}
 
 	def static String addBiDirEdge(String from, String to, String label) {
-		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, length: 250, arrows: {from:{enabled: true, type:"vee",}, to: {enabled: true, type:"vee",},},});'''
+		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, length: 300, arrows: {from:{enabled: true, type:"vee",}, to: {enabled: true, type:"vee",},},});'''
 	}
 
 	def static String configureNode(String id, Collection<String> properties) {

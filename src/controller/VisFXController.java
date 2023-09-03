@@ -1,10 +1,17 @@
 package controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+
+import com.google.common.collect.HashBiMap;
 
 import javafx.embed.swt.FXCanvas;
 import javafx.scene.Group;
@@ -32,8 +39,9 @@ public class VisFXController {
 	private WebView webView;
 	private WebEngine engine;
 	private Group root;
+	private Map<ISelection, Entry<List<Integer>, List<Integer>>> savedConfigs;
+	private ISelection selection;
 	private List<Node> controls;
-	private List<Integer> highlightIds;
 
 	/**
 	 * 
@@ -42,11 +50,17 @@ public class VisFXController {
 	 */
 	public VisFXController(Composite parent) {
 		fxCanvas = new FXCanvas(parent, SWT.NONE);
-		highlightIds = new ArrayList<Integer>();
+		savedConfigs = new HashMap<>();
 	}
 
-	public void handOverModel(ModelHandler model) {
+	/**
+	 * 
+	 * @param model
+	 */
+	public void selectionToModel(ModelHandler model, ISelection selection) {
 		this.model = model;
+		this.selection = selection;
+		createVis();
 	}
 
 	/**
@@ -67,7 +81,7 @@ public class VisFXController {
 	/** 
 	 * 
 	 */
-	public void addControlsforView() {
+	public void addControlsForView() {
 		root.getChildren().clear();
 		root.getChildren().add(webView);
 		createControlsForView().forEach(control -> {
@@ -92,13 +106,28 @@ public class VisFXController {
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public void buildVisWithControls() {
+	public void createVis() {
 		engine.executeScript(VisJsScriptTemplates.destroyNetwork());
-		highlightIds.clear();
 		model.buildVis();
 		model.createNetwork(engine);
+		addControlsForView();
+		if (savedConfigs.containsKey(selection)) {
+			if (!savedConfigs.get(selection).getValue().isEmpty()) {
+				((ToggleButton) controls.get(5)).setSelected(true);
+				((ToggleButton) controls.get(5)).setText("Show non-hightlighted Nodes");
+			}
+			savedConfigs.get(selection).getKey().forEach(highlightId -> {
+				engine.executeScript(VisJsScriptTemplates.hightlightChoiceNodes(highlightId));
+			});
+			savedConfigs.get(selection).getValue().forEach(hideId -> {
+				engine.executeScript(VisJsScriptTemplates.hideNode(hideId));
+			});
+		} else {
+			savedConfigs.put(selection, new AbstractMap.SimpleEntry<List<Integer>, List<Integer>>(
+					new ArrayList<Integer>(), new ArrayList<Integer>()));
+		}
 	}
 
 	/**
@@ -141,9 +170,8 @@ public class VisFXController {
 				engine.executeScript(VisJsScriptTemplates.deHightlightChoiceNodes(model.getNodeId()));
 			} else {
 				model.getChoiceIds(cb.getValue()).forEach(id -> {
-					if (!highlightIds.contains(id))
-						highlightIds.add(id);
 					engine.executeScript(VisJsScriptTemplates.hightlightChoiceNodes(id));
+					savedConfigs.get(selection).getKey().add(id);
 				});
 			}
 		});
@@ -171,9 +199,8 @@ public class VisFXController {
 		filterTextField.setLayoutY(400);
 		filterTextField.setOnAction(e_ -> {
 			model.getTextFieldIds(filterTextField.getText()).forEach(id -> {
-				if (!highlightIds.contains(id))
-					highlightIds.add(id);
 				engine.executeScript(VisJsScriptTemplates.hightlightChoiceNodes(id));
+				savedConfigs.get(selection).getKey().add(id);
 			});
 		});
 		return filterTextField;
@@ -199,20 +226,20 @@ public class VisFXController {
 		nonHighlightButton.setLayoutX(20);
 		nonHighlightButton.setLayoutY(430);
 		nonHighlightButton.setOnAction(value -> {
-			if (!highlightIds.isEmpty()) {
-				if (nonHighlightButton.isSelected()) {
+			if (nonHighlightButton.isSelected()) {
+				if (!savedConfigs.get(selection).getKey().isEmpty()) {
 					nonHighlightButton.setText("Show non-hightlighted Nodes");
-					model.getNonHighlightIds(highlightIds).forEach(id -> {
-						System.out.println(id);
+					model.getNonHighlightIds(savedConfigs.get(selection).getKey()).forEach(id -> {
 						engine.executeScript(VisJsScriptTemplates.hideNode(id));
-					});
-				} else {
-					nonHighlightButton.setText("Hide non-hightlighted Nodes");
-					model.getNonHighlightIds(highlightIds).forEach(id -> {
-						System.out.println(id);
-						engine.executeScript(VisJsScriptTemplates.showNode(id));
+						savedConfigs.get(selection).getValue().add(id);
 					});
 				}
+			} else {
+				nonHighlightButton.setText("Hide non-hightlighted Nodes");
+				model.getNonHighlightIds(savedConfigs.get(selection).getKey()).forEach(id -> {
+					engine.executeScript(VisJsScriptTemplates.showNode(id));
+					savedConfigs.get(selection).getValue().remove(id);
+				});
 			}
 		});
 
@@ -229,7 +256,7 @@ public class VisFXController {
 		deHighlightButton.setLayoutY(460);
 		deHighlightButton.setOnAction(e -> {
 			engine.executeScript(VisJsScriptTemplates.deHightlightChoiceNodes(model.getNodeId()));
-			highlightIds.clear();
+			savedConfigs.get(selection).getKey().clear();
 		});
 		return deHighlightButton;
 	}

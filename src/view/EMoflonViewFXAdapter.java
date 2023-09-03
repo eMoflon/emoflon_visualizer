@@ -1,6 +1,8 @@
 package view;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.viewers.ISelection;
@@ -9,6 +11,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.moflon.core.ui.EMoflonView;
 import org.moflon.core.ui.visualisation.common.EMoflonViewVisualizer;
+
+import com.google.common.collect.HashBiMap;
 
 import controller.VisFXController;
 import javafx.embed.swt.FXCanvas;
@@ -23,6 +27,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
+
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import javafx.scene.control.ChoiceBox;
 import model.ModelHandler;
 import model.ModelRecognizer;
@@ -38,7 +45,7 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 	 * 
 	 */
 	public EMoflonViewFXAdapter() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	/**
@@ -57,9 +64,7 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 	public boolean renderView(EMoflonView emoflonView, IWorkbenchPart part, ISelection selection) {
 		System.out.println("renderView");
 		model = ModelRecognizer.identifyModel(selection);
-		controller.handOverModel(model);
-		controller.buildVisWithControls();
-		controller.addControlsforView();
+		controller.selectionToModel(model, selection);
 		return true;
 	}
 
@@ -69,8 +74,7 @@ public class EMoflonViewFXAdapter implements EMoflonViewVisualizer {
 	@Override
 	public void createPartControl(Composite parent) {
 		System.out.println("createPartControl");
-	    controller = new VisFXController(parent);
-	    controller.initialize();
+		controller = new VisFXController(parent);
+		controller.initialize();
 	}
-
 }
