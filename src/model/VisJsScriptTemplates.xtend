@@ -45,9 +45,15 @@ class VisJsScriptTemplates {
 						          var options = {
 						          	  autoResize: true,
 						          	 physics: {
+						          	 	    barnesHut: {
+						          	 	      gravitationalConstant: -50000 
+						          	 	    },
 						          	     "enabled": true,
 						          	     avoidOverlap: 1,
-						          	     stabilization: true
+						          	     stabilization: {
+						          	     	enabled : true,
+						          	     	iterations : 200
+						          	     	},
 						          	 },
 						          	 			interaction: { 
 						          	 				multiselect: true,
@@ -105,19 +111,19 @@ class VisJsScriptTemplates {
 	}
 
 	def static String addEdge(String from, String to, String label) {
-		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, length: 300, arrows: {from:{ enabled: true, type:"diamond",}, to: {enabled: true, type:"vee",},},});'''
+		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, arrows: {from:{ enabled: true, type:"diamond",}, to: {enabled: true, type:"vee",},},});'''
 	}
 
 	def static String addHeridityEdge(String from, String to) {
-		return '''edges.add({from: «from», to: «to», font: {align: "bottom" }, length: 500, arrows: {from:{enabled: true, type:"triangle",},},});'''
+		return '''edges.add({from: «from», to: «to», font: {align: "bottom" }, arrows: {from:{enabled: true, type:"triangle",},},});'''
 	}
 
 	def static String addImplementsEdge(String from, String to) {
-		return '''edges.add({from: «from», to: «to», font: {align: "bottom" }, label: "implements", dashes: true, length: 500, arrows: {from:{enabled: true, type:"triangle",},},});'''
+		return '''edges.add({from: «from», to: «to», font: {align: "bottom" }, label: "implements", dashes: true, arrows: {from:{enabled: true, type:"triangle",},},});'''
 	}
 
 	def static String addBiDirEdge(String from, String to, String label) {
-		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, length: 300, arrows: {from:{enabled: true, type:"vee",}, to: {enabled: true, type:"vee",},},});'''
+		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, arrows: {from:{enabled: true, type:"vee",}, to: {enabled: true, type:"vee",},},});'''
 	}
 
 	def static String configureNode(String id, Collection<String> properties) {
