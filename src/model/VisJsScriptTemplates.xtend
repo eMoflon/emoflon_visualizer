@@ -178,7 +178,7 @@ class VisJsScriptTemplates {
 	}
 
 	def static String hightlightChoiceNodes(Integer id) {
-		return '''nodes.update({id:"«id»", color : {background: "#FF0000",border: "black"}});'''
+		return '''nodes.update({id:"«id»", color : {background: "#ffb347",border: "#ae6500"}});'''
 	}
 
 	def static String deHightlightChoiceNodes(Integer idCounter) {

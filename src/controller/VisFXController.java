@@ -17,8 +17,10 @@ import javafx.embed.swt.FXCanvas;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TextField;
@@ -74,7 +76,8 @@ public class VisFXController {
 		engine.setJavaScriptEnabled(true);
 		engine.loadContent(VisJsScriptTemplates.getJSTemplate());
 
-		Scene view_scene = new Scene(root);
+		Scene view_scene = new Scene(root, 1000, 1000);
+		view_scene.getStylesheets().add(getClass().getResource("fxstyling.css").toExternalForm());
 		fxCanvas.setScene(view_scene);
 	}
 
@@ -102,6 +105,7 @@ public class VisFXController {
 		controls.add(createTextFieldLabel());
 		controls.add(createHideNonHighlightToggle());
 		controls.add(createDeHighlightButton());
+		controls.add(createColorPicker());
 		return controls;
 	}
 
@@ -136,8 +140,8 @@ public class VisFXController {
 	 */
 	private ToggleButton createHideAttrToggle() {
 		ToggleButton attrButton = new ToggleButton("hide attributes");
-		attrButton.setLayoutX(400);
-		attrButton.setLayoutY(370);
+		attrButton.setLayoutX(230);
+		attrButton.setLayoutY(430);
 		attrButton.setOnAction(value -> {
 			if (attrButton.isSelected()) {
 				engine.executeScript(VisJsScriptTemplates.hideAllAttributes(model.getNodeId()));
@@ -211,7 +215,7 @@ public class VisFXController {
 	 * @return
 	 */
 	private Label createTextFieldLabel() {
-		Label choiceBoxLabel = new Label("Search for following String :");
+		Label choiceBoxLabel = new Label("Search for following Regex :");
 		choiceBoxLabel.setLayoutX(20);
 		choiceBoxLabel.setLayoutY(400);
 		return choiceBoxLabel;
@@ -223,7 +227,7 @@ public class VisFXController {
 	 */
 	private ToggleButton createHideNonHighlightToggle() {
 		ToggleButton nonHighlightButton = new ToggleButton("Hide non-hightlighted Nodes");
-		nonHighlightButton.setLayoutX(20);
+		nonHighlightButton.setLayoutX(17);
 		nonHighlightButton.setLayoutY(430);
 		nonHighlightButton.setOnAction(value -> {
 			if (nonHighlightButton.isSelected()) {
@@ -233,6 +237,8 @@ public class VisFXController {
 						engine.executeScript(VisJsScriptTemplates.hideNode(id));
 						savedConfigs.get(selection).getValue().add(id);
 					});
+				} else {
+					nonHighlightButton.setSelected(false);
 				}
 			} else {
 				nonHighlightButton.setText("Hide non-hightlighted Nodes");
@@ -252,13 +258,24 @@ public class VisFXController {
 	 */
 	private Button createDeHighlightButton() {
 		Button deHighlightButton = new Button("De-highlight all");
-		deHighlightButton.setLayoutX(20);
-		deHighlightButton.setLayoutY(460);
+		deHighlightButton.setLayoutX(330);
+		deHighlightButton.setLayoutY(370);
 		deHighlightButton.setOnAction(e -> {
 			engine.executeScript(VisJsScriptTemplates.deHightlightChoiceNodes(model.getNodeId()));
 			savedConfigs.get(selection).getKey().clear();
 		});
 		return deHighlightButton;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private ColorPicker createColorPicker() {
+		ColorPicker colorPicker = new ColorPicker();
+		colorPicker.setLayoutX(17);
+		colorPicker.setLayoutY(460);
+		return colorPicker;
 	}
 
 }
