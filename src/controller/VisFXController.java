@@ -156,8 +156,8 @@ public class VisFXController {
 				});
 			}
 			if (!savedConfigs.get(selection).getValue().isEmpty()) {
-				((ToggleButton) controls.get(5)).setSelected(true);
-				((ToggleButton) controls.get(5)).setText("Show non-hightlighted nodes");
+					((ToggleButton) controls.get(6)).setSelected(true);
+					((ToggleButton) controls.get(6)).setText("Show non-hightlighted nodes");
 			}
 			savedConfigs.get(selection).getKey().forEach(highlightId -> {
 				engine.executeScript(
@@ -488,6 +488,7 @@ public class VisFXController {
 					hideHighlightButton.setText("Show hightlighted nodes");
 					savedConfigs.get(selection).getKey().forEach(highlightId -> {
 						engine.executeScript(VisJsScriptTemplates.hideNode(highlightId));
+						savedConfigs.get(selection).getValue().add(highlightId);
 					});
 				} else {
 					Alert alert = new Alert(AlertType.INFORMATION);
@@ -501,6 +502,7 @@ public class VisFXController {
 					engine.executeScript(VisJsScriptTemplates.showNode(highlightId));
 					engine.executeScript(
 							VisJsScriptTemplates.hightlightColorNodes(highlightId, highlightColor, highlightBorder));
+					savedConfigs.get(selection).getValue().remove(highlightId);
 				});
 			}
 		});
