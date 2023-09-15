@@ -24,6 +24,8 @@ public abstract class ModelHandler {
 	
 	public abstract List<Integer> getTextFieldIds(String filterWord);
 	
+	public abstract List<Integer> getTextFieldAndIds(String firstFilterWord, String secondFilterWord);
+	
 	public abstract List<Integer> getNonHighlightIds(List<Integer> highlightIds);
 	
 	public abstract int getNodeId();

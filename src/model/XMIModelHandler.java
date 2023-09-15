@@ -83,7 +83,7 @@ public class XMIModelHandler extends ModelHandler {
 	public String extractAttributes(EObject current) {
 		ArrayList<String> helpList = new ArrayList<String>();
 		current.eClass().getEAllAttributes().forEach(attr -> {
-			helpList.add("\\n" + "• " + attr.getName() + " = " + current.eGet(attr));
+			helpList.add("\\n" + attr.getName() + " = " + current.eGet(attr));
 		});
 		String attrStr = "";
 		for (String str : helpList)
@@ -193,7 +193,8 @@ public class XMIModelHandler extends ModelHandler {
 	public List<Integer> getTextFieldIds(String filterWord) {
 		List<Integer> textFieldIds = new ArrayList<Integer>();
 		allNodes.forEach((key, value) -> {
-			if (TextFieldPatternMatcher.matchTextFieldInput(filterWord, value.getValue())) {
+			if (TextFieldPatternMatcher.matchTextFieldInput(filterWord, value.getValue())
+					|| TextFieldPatternMatcher.matchTextFieldInput(filterWord, key.eClass().getName())) {
 				textFieldIds.add(value.getKey());
 			}
 		});
@@ -207,10 +208,24 @@ public class XMIModelHandler extends ModelHandler {
 	public List<Integer> getNonHighlightIds(List<Integer> highlightIds) {
 		List<Integer> nonhighlightIds = new ArrayList<Integer>();
 		allNodes.forEach((key, value) -> {
-			if (!highlightIds.contains(value.getKey())) 
+			if (!highlightIds.contains(value.getKey()))
 				nonhighlightIds.add(value.getKey());
 		});
 		return nonhighlightIds;
+	}
+
+	@Override
+	public List<Integer> getTextFieldAndIds(String firstFilterWord, String secondFilterWord) {
+		List<Integer> textFieldIds = new ArrayList<Integer>();
+		allNodes.forEach((key, value) -> {
+			if ((TextFieldPatternMatcher.matchTextFieldInput(firstFilterWord, value.getValue())
+					|| TextFieldPatternMatcher.matchTextFieldInput(firstFilterWord, key.eClass().getName()))
+					&& (TextFieldPatternMatcher.matchTextFieldInput(secondFilterWord, value.getValue())
+							|| TextFieldPatternMatcher.matchTextFieldInput(secondFilterWord, key.eClass().getName()))) {
+				textFieldIds.add(value.getKey());
+			}
+		});
+		return textFieldIds;
 	}
 
 }

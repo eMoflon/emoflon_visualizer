@@ -110,7 +110,9 @@ public class MetaModelHandler extends ModelHandler {
 								allEdges.put(
 										new AbstractMap.SimpleEntry<String, String>("biDir",
 												ref.getName() + "   " + ref.getLowerBound() + "..."
-														+ ref.getUpperBound()),
+														+ ref.getUpperBound() + ", " + ref.getEOpposite().getName()
+														+ "   " + ref.getEOpposite().getLowerBound() + "..."
+														+ ref.getEOpposite().getUpperBound()),
 										new AbstractMap.SimpleEntry<String, String>(
 												allNodes.get(ref.getEReferenceType()).getKey() + "",
 												allNodes.get(ref.getEOpposite().getEReferenceType()).getKey() + ""));
@@ -147,8 +149,8 @@ public class MetaModelHandler extends ModelHandler {
 			if (ref.getEReferenceType().getName() == "EStructuralFeature") {
 				EList<EObject> refList = (EObjectContainmentWithInverseEList) eobj.eGet(ref);
 				for (int i = 0; i < refList.size(); i++) {
-					helpList.add("\\n" + "• " + ((EStructuralFeature) refList.get(i)).getEType().getName() + " "
-							+ ((EStructuralFeature) refList.get(i)).getName());
+					helpList.add("\\n" + ((EStructuralFeature) refList.get(i)).getName() + " : "
+							+ ((EStructuralFeature) refList.get(i)).getEType().getName());
 				}
 				;
 			}
@@ -265,7 +267,8 @@ public class MetaModelHandler extends ModelHandler {
 	public List<Integer> getTextFieldIds(String filterWord) {
 		List<Integer> textFieldIds = new ArrayList<Integer>();
 		allNodes.forEach((key, value) -> {
-			if (TextFieldPatternMatcher.matchTextFieldInput(filterWord, value.getValue())) {
+			if (TextFieldPatternMatcher.matchTextFieldInput(filterWord, value.getValue())
+					| TextFieldPatternMatcher.matchTextFieldInput(filterWord, ((EClass) key).getName())) {
 				textFieldIds.add(value.getKey());
 			}
 		});
@@ -279,10 +282,25 @@ public class MetaModelHandler extends ModelHandler {
 	public List<Integer> getNonHighlightIds(List<Integer> highlightIds) {
 		List<Integer> nonhighlightIds = new ArrayList<Integer>();
 		allNodes.forEach((key, value) -> {
-			if (!highlightIds.contains(value.getKey())) 
+			if (!highlightIds.contains(value.getKey()))
 				nonhighlightIds.add(value.getKey());
 		});
 		return nonhighlightIds;
+	}
+
+	@Override
+	public List<Integer> getTextFieldAndIds(String firstFilterWord, String secondFilterWord) {
+		List<Integer> textFieldIds = new ArrayList<Integer>();
+		allNodes.forEach((key, value) -> {
+			if ((TextFieldPatternMatcher.matchTextFieldInput(firstFilterWord, value.getValue())
+					|| TextFieldPatternMatcher.matchTextFieldInput(firstFilterWord, ((EClass) key).getName()))
+					&& (TextFieldPatternMatcher.matchTextFieldInput(secondFilterWord, value.getValue())
+							|| TextFieldPatternMatcher.matchTextFieldInput(secondFilterWord,
+									((EClass) key).getName()))) {
+				textFieldIds.add(value.getKey());
+			}
+		});
+		return textFieldIds;
 	}
 
 }

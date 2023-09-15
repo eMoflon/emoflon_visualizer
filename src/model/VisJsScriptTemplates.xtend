@@ -10,7 +10,7 @@ class VisJsScriptTemplates {
 	/**
 	 * 
 	 */
-	def static String getJSTemplate() {
+def static String getJSTemplate() {
 		return '''
 			<!DOCTYPE html>
 						<html lang="en">
@@ -81,49 +81,50 @@ class VisJsScriptTemplates {
 		'''
 	}
 
+
 //parametriesieren ud kürzen
 	def static String addNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#93bae2",border: "black"}});
+		return '''nodes.add({ id: "«id»",font: { multi: "html", bold: '16px arial black', ital : '10px cursive',align : "left"}, label:"<b>«label»</b>"+"\n"+"«attributes»", shape: "box", color: { background: "#93bae2",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
 				  labelNodes.set("«id»", "«label»");
 				  optionNodes.set("«id»", "#93bae2");'''
 	}
 
 	def static String addEnumNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>EEnum</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: {  background: "#e2bb93",border: "black"}});
+		return '''nodes.add({ id: "«id»",font: { multi: "html", bold: '16px arial black',ital : '10px cursive',align : "left"}, label: "<i><<EEnum>></i> \n <b>«label»</b>\n"+"«attributes»", shape: "box", color: {  background: "#e2bb93",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
 				  labelNodes.set("«id»", "«label»");
 				  optionNodes.set("«id»", "#e2bb93");'''
 	}
 
 	def static String addAbstractNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Abstract</i> \n<code>"+"«label»"+"</code>\n"+"«attributes»", shape: "box", color: { background: "#e3edf7",border: "black"}});
+		return '''nodes.add({ id: "«id»",font: { multi: "html", bold: '16px arial black',ital : '10px cursive',align : "left"}, label: "<i><<Abstract>></i> \n <b>«label»</b>\n"+"«attributes»", shape: "box", color: { background: "#e3edf7",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
 				  labelNodes.set("«id»", "«label»");
 				  optionNodes.set("«id»", "#e3edf7");'''
 	}
 
 	def static String addInterfaceNode(Integer id, String label, String attributes) {
-		return '''nodes.add({ id: "«id»",font: { multi: true }, label: "<i>Interface</i> \n<code>"+"«label»", shape: "box", color: { background: "#c1e1c1",border: "black"}});
+		return '''nodes.add({ id: "«id»",font: { multi: "html", bold: '16px arial black',ital : '10px cursive',align : "left" }, label: "<i><<Interface>></i> \n <b>«label»</b>", shape: "box", color: { background: "#c1e1c1",border: "black"}});
 		          attrNodes.set("«id»","<code>"+"«label»"+"</code>\n"+"«attributes»");
 				  labelNodes.set("«id»", "«label»");
 				  optionNodes.set("«id»","#c1e1c1");'''
 	}
 
 	def static String addEdge(String from, String to, String label) {
-		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, arrows: {from:{ enabled: true, type:"diamond",}, to: {enabled: true, type:"vee",},},});'''
+		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, length : 200, arrows: {from:{ enabled: true, type:"diamond",}, to: {enabled: true, type:"vee",},},});'''
 	}
 
 	def static String addHeridityEdge(String from, String to) {
-		return '''edges.add({from: «from», to: «to», font: {align: "bottom" }, arrows: {from:{enabled: true, type:"triangle",},},});'''
+		return '''edges.add({from: «from», to: «to», font: {align: "bottom" }, length : 200, arrows: {from:{enabled: true, type:"triangle",},},});'''
 	}
 
 	def static String addImplementsEdge(String from, String to) {
-		return '''edges.add({from: «from», to: «to», font: {align: "bottom" }, label: "implements", dashes: true, arrows: {from:{enabled: true, type:"triangle",},},});'''
+		return '''edges.add({from: «from», to: «to», font: {align: "bottom" }, length : 200, label: "implements", dashes: true, arrows: {from:{enabled: true, type:"triangle",},},});'''
 	}
 
 	def static String addBiDirEdge(String from, String to, String label) {
-		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, arrows: {from:{enabled: true, type:"vee",}, to: {enabled: true, type:"vee",},},});'''
+		return '''edges.add({from: «from», to: «to», label:"«label»", font: {align: "bottom" }, length : 200, arrows: {from:{enabled: true, type:"vee",}, to: {enabled: true, type:"vee",},},});'''
 	}
 
 	def static String configureNode(String id, Collection<String> properties) {
@@ -165,6 +166,23 @@ class VisJsScriptTemplates {
 		'''
 	}
 
+	def static String clickOnNetworkHighlight(String color, String border) {
+		return '''
+		network.on("selectNode", function (params) {
+			params.nodes.forEach((nodeId) =>
+				network.body.nodes[nodeId].setOptions({
+					color: {background: "«color»",border: "«border»"}
+					})
+					);
+						});'''
+	}
+
+	def static String removeClickOnNetworkHighlight() {
+		return '''
+			network.off("selectNode");  	
+		'''
+	}
+
 	def static String hideAllAttributes(Integer idCounter) {
 		return '''for (let i=«idCounter»; i >= 0; i--) {
 			nodes.update({id:i.toString(), label : labelNodes.get(i.toString())});
@@ -179,6 +197,10 @@ class VisJsScriptTemplates {
 
 	def static String hightlightChoiceNodes(Integer id) {
 		return '''nodes.update({id:"«id»", color : {background: "#ffb347",border: "#ae6500"}});'''
+	}
+
+	def static String hightlightColorNodes(Integer id, String color, String border) {
+		return '''nodes.update({id:"«id»", color : {background: "«color»",border: "«border»"}});'''
 	}
 
 	def static String deHightlightChoiceNodes(Integer idCounter) {

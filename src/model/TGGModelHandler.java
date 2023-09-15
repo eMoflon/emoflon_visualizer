@@ -59,6 +59,12 @@ public class TGGModelHandler extends ModelHandler {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<Integer> getTextFieldAndIds(String firstFilterWord, String secondFilterWord) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 
 
