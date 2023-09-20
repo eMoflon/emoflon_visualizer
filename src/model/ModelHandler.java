@@ -1,11 +1,6 @@
 package model;
 
 import java.util.List;
-import java.util.Map.Entry;
-
-import com.google.common.collect.HashBiMap;
-
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.web.WebEngine;
 
 public abstract class ModelHandler {

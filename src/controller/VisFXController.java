@@ -15,19 +15,14 @@ import javafx.embed.swt.FXCanvas;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -734,6 +729,7 @@ public class VisFXController {
 			alert.setContentText(
 					"You can choose different colors for highlighting from the color-picker. Default is yellow." + "\n"
 							+ "Hovering over the controls will give you a short explanation/tooltip.");
+			alert.setHeaderText("Need Help ?");
 			alert.show();
 		});
 		return helpButton;

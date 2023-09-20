@@ -1,11 +1,5 @@
 package model
 
-import java.util.Map
-import java.util.Collection
-import java.util.Map.Entry
-import java.util.LinkedList
-import java.util.ArrayList
-
 class VisJsScriptTemplates {
 
 	/**
@@ -60,15 +54,9 @@ def static String getJSTemplate() {
 						          	 },
 						          	 			interaction: { 
 						          	 				multiselect: true,
-«««						          	 				dragNodes: true,
 						          	 				navigationButtons: true,
 						          	 			keyboard: true
 						          	 			},
-«««						          	 			    			                   	 				  edges: {
-«««						          	 			    			                   	 				    smooth: {
-«««						          	 			    			                   	 				      type: "continuous",
-«««						          	 			    			                   	 				    },
-«««						          	 			    			                   	 				  },
 						          	 			   	 			    			 repulsion: {
 						          	 			   	 			    			  springLength: 1000,
 						          	 			   	 			    			  nodeDistance: 1000,
