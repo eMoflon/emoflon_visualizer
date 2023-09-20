@@ -1,5 +1,6 @@
 .button {
-	-fx-background-color: #c1e1c1;
+	-fx-background-color: #c1e1c1
+	;
 	-fx-text-fill: "black";
 	-fx-background-radius: 16px;
 	-fx-border-radius: 16px;
@@ -40,7 +41,6 @@
 }
 
 .choice-box {
-	-fx-pref-width: 100;
 	-fx-background-color: #c1e1c1;
 	-fx-background-radius: 16px;
 	-fx-mark-color: black;
@@ -60,6 +60,10 @@
 	-fx-background-radius: 16px;
 }
 
+.color-picker .context-menu {
+	-fx-background-color: #c1e1c1;
+}
+
 .text-field {
     -fx-background-color: #a9a9a9 , white , white;
     -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
@@ -73,4 +77,9 @@
 .check-box .box{
 	-fx-background-color: #c1e1c1;
 	-fx-background-radius: 16px;
+}
+
+.table-view .column-header-background{
+    -fx-background-color: #c1e1c1;
+
 }

@@ -11,18 +11,21 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EEnumLiteral;
-import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 
 import com.google.common.collect.HashBiMap;
 
 import controller.TextFieldPatternMatcher;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.web.WebEngine;
 
+/**
+ * Creates and handles all models that are of the type "meta-model"
+ * 
+ * @author maximiliansell
+ *
+ */
 public class MetaModelHandler extends ModelHandler {
 
 	private int nodeId;
@@ -32,8 +35,9 @@ public class MetaModelHandler extends ModelHandler {
 	private HashMap<Entry<String, String>, Entry<String, String>> allEdges = new HashMap<Entry<String, String>, Entry<String, String>>();
 
 	/**
+	 * Creates an instance of the Class MetaModelHandler
 	 * 
-	 * @param elist
+	 * @param elist - list of EObjects
 	 */
 	public MetaModelHandler(Collection<EObject> elist) {
 		this.elist = elist;
@@ -42,7 +46,8 @@ public class MetaModelHandler extends ModelHandler {
 	}
 
 	/**
-	 * 
+	 * Builds and fills the required HashBiMaps allNodes and allEdges with for
+	 * Vis.js (visualisation) needed parameters
 	 */
 	public void buildVis() {
 		extractNodes();
@@ -51,9 +56,13 @@ public class MetaModelHandler extends ModelHandler {
 	}
 
 	/**
-	 * 
+	 * Extracts all important parameters for the nodes(vis.js) of the visualisation
+	 * from the elist (selection) -> e.g. type of EClass, name of EClass ,
+	 * attributes etc. and puts them into the HashBiMap allNodes. The contents of
+	 * allNodes can be later used by the Class VisJsScriptTemplates to add nodes to
+	 * the visualisation
 	 */
-	public void extractNodes() {
+	private void extractNodes() {
 		elist.forEach(current -> {
 			switch (current.eClass().getName()) {
 			case "EClass":
@@ -76,9 +85,13 @@ public class MetaModelHandler extends ModelHandler {
 	}
 
 	/**
-	 * 
+	 * Extracts all important parameters for the edges(vis.js) of the visualisation
+	 * from the elist (selection) -> e.g. type of edge, name of edge ,
+	 * multiplicities etc. and puts them into the HashBiMap allEdges The contents of
+	 * allNodes can be later used by the Class VisJsScriptTemplates to add edges to
+	 * the visualisation
 	 */
-	public void extractEdges() {
+	private void extractEdges() {
 		elist.forEach(current -> {
 			switch (current.eClass().getName()) {
 			case "EClass":
@@ -137,17 +150,19 @@ public class MetaModelHandler extends ModelHandler {
 	}
 
 	/**
+	 * Extracts and concats all attributes from the given EObject into a String for
+	 * the map allNodes
 	 * 
-	 * @param elist
-	 * @return
+	 * @param eObj - EObject with potential attributes
+	 * @return string of concated attributes
 	 */
-	public String extractEAttributes(EObject eobj) {
+	private String extractEAttributes(EObject eObj) {
 
 		ArrayList<String> helpList = new ArrayList<String>();
 
-		eobj.eClass().getEAllContainments().forEach(ref -> {
+		eObj.eClass().getEAllContainments().forEach(ref -> {
 			if (ref.getEReferenceType().getName() == "EStructuralFeature") {
-				EList<EObject> refList = (EObjectContainmentWithInverseEList) eobj.eGet(ref);
+				EList<EObject> refList = (EObjectContainmentWithInverseEList) eObj.eGet(ref);
 				for (int i = 0; i < refList.size(); i++) {
 					helpList.add("\\n" + ((EStructuralFeature) refList.get(i)).getName() + " : "
 							+ ((EStructuralFeature) refList.get(i)).getEType().getName());
@@ -162,7 +177,11 @@ public class MetaModelHandler extends ModelHandler {
 	}
 
 	/**
+	 * Creates a javascript based Vis.js-network with given JavaFX WebEngine using
+	 * the xtend-file VisJsSciptTemplates methods
 	 * 
+	 * @param engine - used to execute a script from the xtend-file
+	 *               VisJsScriptTemplates
 	 */
 	public void createNetwork(WebEngine engine) {
 		allNodes.forEach((key, value) -> {
@@ -206,7 +225,10 @@ public class MetaModelHandler extends ModelHandler {
 	}
 
 	/**
+	 * Computes a list of all EClass names contained by the current metamodel ->
+	 * resulting list can be later put into the JavaFX-controls ChoiceBox
 	 * 
+	 * @return list of EClass-names of the current selection
 	 */
 	@Override
 	public List<String> computeitems() {
@@ -227,7 +249,11 @@ public class MetaModelHandler extends ModelHandler {
 	}
 
 	/**
+	 * Searches in the map allNodes for EClass names which match the provided
+	 * filterWord and returns a list containing their ids
 	 * 
+	 * @param filterWord - string that acts as the filter
+	 * @return list of filtered node ids
 	 */
 	@Override
 	public List<Integer> getChoiceIds(String filterWord) {
@@ -253,15 +279,11 @@ public class MetaModelHandler extends ModelHandler {
 	}
 
 	/**
+	 * Searches in the map allNodes for nodes which contain the provided filterWord
+	 * and returns a list containing their ids
 	 * 
-	 */
-	@Override
-	public int getNodeId() {
-		return nodeId - 1;
-	}
-
-	/**
-	 * 
+	 * @param filterWord - string that acts as the filter
+	 * @return list of filtered node ids
 	 */
 	@Override
 	public List<Integer> getTextFieldIds(String filterWord) {
@@ -276,7 +298,13 @@ public class MetaModelHandler extends ModelHandler {
 	}
 
 	/**
+	 * Searches in the map allNodes for nodes which contain both of the given
+	 * firstFilterWord-string and secondFilterWord-string and returns a list
+	 * containing their ids
 	 * 
+	 * @param firstFilterWord  - string that acts as the filter
+	 * @param secondFilterWord - string that acts as the filter
+	 * @return list of filtered node ids
 	 */
 	@Override
 	public List<Integer> getNonHighlightIds(List<Integer> highlightIds) {
@@ -288,6 +316,13 @@ public class MetaModelHandler extends ModelHandler {
 		return nonhighlightIds;
 	}
 
+	/**
+	 * Searches in the map allNodes for nodes which are not contained in the
+	 * provided list highlightIds and returns a list containing their ids
+	 * 
+	 * @param highlightIds - list that acts as the filter
+	 * @return list of filtered node ids
+	 */
 	@Override
 	public List<Integer> getTextFieldAndIds(String firstFilterWord, String secondFilterWord) {
 		List<Integer> textFieldIds = new ArrayList<Integer>();
@@ -301,6 +336,16 @@ public class MetaModelHandler extends ModelHandler {
 			}
 		});
 		return textFieldIds;
+	}
+
+	/**
+	 * Returns the highest of id of all nodes contained by the metamodel
+	 * 
+	 * @return highest node id
+	 */
+	@Override
+	public int getNodeId() {
+		return nodeId - 1;
 	}
 
 }
