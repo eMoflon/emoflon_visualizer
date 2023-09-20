@@ -57,10 +57,6 @@ def static String getJSTemplate() {
 						          	 				navigationButtons: true,
 						          	 			keyboard: true
 						          	 			},
-						          	 			   	 			    			 repulsion: {
-						          	 			   	 			    			  springLength: 1000,
-						          	 			   	 			    			  nodeDistance: 1000,
-						          	 				 			    			 },
 						          	 	 };
 					var network = new vis.Network(container, data, options); 	      	
 					var labelNodes = new Map();
